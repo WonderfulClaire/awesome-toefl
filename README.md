@@ -70,7 +70,7 @@
 
 | 章节 | 核心内容 |
 | --- | --- |
-| [🤖 AI 辅助备考](docs/07-ai-prep/ai-toolkit.md) | 20+ 可直接复制的提示词：出题、批改、陪练、复盘 |
+| [🤖 AI 辅助备考](docs/07-ai-prep/ai-toolkit.md) | 提示词库 + 一键直开 ChatGPT 链接 + 零依赖本地陪练工具 `ai_coach.py`（接你自己的 API Key 无限刷题） |
 | [🧰 资源汇总](docs/08-resources/resources.md) | 官方资源、免费网站、App、模考平台（全部亲测可用逻辑筛选） |
 | [🎯 考场实战](docs/09-test-day/test-day-guide.md) | 报名流程、考前清单、考场时间管理、送分与复议 |
 
