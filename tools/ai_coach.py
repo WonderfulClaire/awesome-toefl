@@ -182,6 +182,79 @@ def read_paste() -> str:
     return "\n".join(lines)
 
 
+# ---------------------------------------------------------------------------
+# grade 模式：载入题库某题 + 用户答案，按评分维度交给 AI 批改
+# ---------------------------------------------------------------------------
+
+
+def load_bank() -> dict:
+    repo_root = Path(__file__).resolve().parent.parent
+    data_path = repo_root / "bank" / "data.js"
+    if not data_path.exists():
+        sys.exit(f"找不到 {data_path}。请先运行 scripts/build_practice.py 生成题库数据。")
+    raw = data_path.read_text(encoding="utf-8")
+    raw = raw.strip()
+    if raw.startswith("window.BANK"):
+        raw = raw.split("=", 1)[1].strip()
+    if raw.endswith(";"):
+        raw = raw[:-1]
+    return json.loads(raw)
+
+
+def grade_answer(args) -> None:
+    if not args.grade_skill or not args.grade_kind or not args.answer:
+        sys.exit("grade 模式需要同时提供 --grade-skill、--grade-kind、--answer。")
+    try:
+        answer = Path(args.answer).read_text(encoding="utf-8").strip()
+    except FileNotFoundError:
+        sys.exit(f"找不到作答文件：{args.answer}")
+
+    bank = load_bank()
+    item = None
+    if args.grade_skill == "writing":
+        item = next((x for x in bank["writing"][args.grade_kind] if x["id"] == args.grade_id), None)
+    elif args.grade_skill == "speaking":
+        item = next((x for x in bank["speaking"][args.grade_kind] if x["id"] == args.grade_id), None)
+    if not item:
+        sys.exit(f"题库中未找到 {args.grade_skill}/{args.grade_kind}/{args.grade_id}。")
+
+    if args.grade_skill == "writing":
+        rubric = "邮件：内容点是否全覆盖、语域（正式度）是否正确、格式是否规范；学术讨论：是否直接回应教授、是否有说透的理由、是否与同学观点互动、语法多样性。"
+        extra = ""
+        if item.get("phrases"):
+            extra += "\n参考高分短语：" + "；".join(f"{p['p']}（{p['n']}）" for p in item["phrases"])
+        if item.get("structure"):
+            extra += "\n参考结构：" + "；".join(item["structure"])
+        prompt = (
+            f"你是托福写作考官，请按官方评分维度批改下面这篇作答。\n"
+            f"【题目】{item['title']}\n【情境】{item.get('situation','')}\n"
+            f"【内容要求】{chr(10).join('- '+r for r in item.get('requirements',[]))}\n"
+            f"【限时】{item.get('time','')}\n{extra}\n\n"
+            f"【评分维度】{rubric}\n\n【考生作答】\n{answer}\n\n"
+            f"请给出：① 总分（满分30的对应档位，或直接给 1–6 分制印象分）；② 逐句/逐段指出问题；"
+            f"③ 具体修改建议；④ 一句最该改的点。"
+        )
+    else:
+        prompt = (
+            f"你是托福口语考官，请批改这段 45 秒应答（无准备时间）。\n"
+            f"【题目】{item['question']}\n【类型】{item.get('type','')}\n"
+            f"【可挂素材】{item.get('material','')}\n\n【考生作答】\n{answer}\n\n"
+            f"请按语言维度批改：流利度、语法准确性、词汇、切题与展开。给出：① 总体印象分（1–6 分制）；"
+            f"② 最伤分的 1–2 个问题；③ 一句更地道的重述建议。"
+        )
+
+    default_url, default_model = PROVIDERS[args.provider]
+    base_url = args.base_url or default_url
+    model = args.model or default_model
+    api_key = args.api_key or os.environ.get(ENV_KEY, "")
+    if not api_key:
+        sys.exit(f"未找到 API Key，请设置环境变量 {ENV_KEY}。")
+
+    print(f"=== 批改 {args.grade_id} · 模型 {model} ===\n")
+    print("AI：", end="")
+    stream_chat(base_url, api_key, model, [{"role": "user", "content": prompt}])
+
+
 def main() -> None:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")  # Windows 控制台中文/emoji
@@ -192,6 +265,12 @@ def main() -> None:
     parser.add_argument("--model", help="自定义模型名")
     parser.add_argument("--api-key", help=f"不推荐明文传入，优先用环境变量 {ENV_KEY}")
     parser.add_argument("--list", action="store_true", help="仅列出训练模式后退出")
+    # ---- grade 模式：载入题库某题 + 你的答案，交给 AI 按评分维度批改 ----
+    parser.add_argument("--grade-skill", choices=["writing", "speaking"],
+                        help="批改技能：writing / speaking")
+    parser.add_argument("--grade-kind", help="题型：writing=email|academic；speaking=interview")
+    parser.add_argument("--grade-id", help="题库题号，如 A-D01 / W-E03 / S-I05")
+    parser.add_argument("--answer", help="你的作答文件路径（.txt）")
     args = parser.parse_args()
 
     exam_name, profile_template, modes = parse_toolkit(find_toolkit_md())
@@ -199,6 +278,11 @@ def main() -> None:
     if args.list:
         for number, heading, _ in modes:
             print(f"{number:>2}. {heading}")
+        return
+
+    # ---- grade 模式 ----
+    if args.grade_id:
+        grade_answer(args)
         return
 
     default_url, default_model = PROVIDERS[args.provider]

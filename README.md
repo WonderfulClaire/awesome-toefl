@@ -64,6 +64,27 @@
 
 ---
 
+## 🎯 题库与练习台（边练边改）
+
+光看不练等于没学。本仓库配套一套**可练、可改、可贡献**的题库与练习台：
+
+- 🖥️ **[在线练习台 practice.html](practice.html)** —— 单页应用，随机抽题 / 限时模拟 / 写作口语接 AI 批改 / 阅读听力即点即判，进度存本机。
+- 📦 **题库源文件**（`bank/`，Markdown，欢迎 PR 补题）：
+  - ✍️ [写作 · 邮件（6 题）](bank/writing/email.md) ｜ [写作 · 学术讨论（8 题）](bank/writing/academic-discussion.md)
+  - 🎤 [口语 · 访谈（14 题）](bank/speaking/interview.md) ｜ [口语 · 听后复述句库](bank/speaking/repeat-sentences.md)
+  - 📖 [阅读（3 篇 · 各 5 题）](bank/reading/) ｜ 🎧 [听力（3 篇 · 各 4 题）](bank/listening/)
+  - 💎 [高分语料库（写作/口语/衔接）](bank/_phrases/phrases.md)
+- 🤖 **终端一键批改**：练完写作/口语，把答案存成 `.txt`，用现有 `ai_coach.py` 直接批改——
+  ```bash
+  python tools/ai_coach.py grade --grade-skill writing --grade-kind academic \
+      --grade-id A-D01 --answer my_answer.txt
+  ```
+  （`--grade-kind` 写作填 `email`/`academic`，口语填 `interview`；无需手动拼提示词。）
+
+> 阅读/听力题为 **ETS 风格练习文本，非官方真题**，仅供方法训练；听力文字稿请配合官方或免费音频使用（见[资源页](docs/08-resources/resources.md)）。
+
+---
+
 ## 🚀 快速开始（3 分钟版）
 
 1. **先读** [2026 新版托福完全解读](docs/01-getting-started/new-toefl-2026.md)，5 分钟搞清楚你要考的是什么；

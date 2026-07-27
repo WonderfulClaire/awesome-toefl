@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TOEFL 2026 · 练习台</title>
+<style>
+  :root{
+    --bg:#f6f8fb; --card:#fff; --fg:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+    --brand:#2563eb; --brand2:#7c3aed; --ok:#16a34a; --bad:#dc2626; --gold:#d97706;
+    --shadow:0 6px 20px rgba(15,23,42,.08); --radius:14px;
+    --chip:#eef2ff;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{--bg:#0f172a;--card:#1e293b;--fg:#e5e7eb;--muted:#94a3b8;--line:#334155;
+      --brand:#60a5fa;--brand2:#a78bfa;--shadow:0 6px 20px rgba(0,0,0,.4);--chip:#1e3a8a;}
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+    background:var(--bg);color:var(--fg);line-height:1.7}
+  header.hero{background:linear-gradient(135deg,#1e3a8a,#7c3aed);color:#fff;padding:26px 20px 18px}
+  header.hero .hwrap{max-width:1100px;margin:0 auto}
+  header.hero h1{margin:0;font-size:22px}
+  header.hero p{margin:6px 0 0;font-size:13px;color:#cbd5e1}
+  .tabs{max-width:1100px;margin:14px auto 0;display:flex;gap:8px;flex-wrap:wrap}
+  .tabs button{border:none;background:rgba(255,255,255,.15);color:#fff;padding:9px 16px;border-radius:999px;
+    cursor:pointer;font-size:14px;font-weight:600}
+  .tabs button.active{background:#fff;color:#1e3a8a}
+  main{max-width:1100px;margin:0 auto;padding:22px 20px 60px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+  .toolbar .spacer{flex:1}
+  button.btn{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:9px 15px;
+    border-radius:10px;cursor:pointer;font-size:14px}
+  button.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+  button.gold{background:var(--gold);color:#fff;border-color:var(--gold)}
+  .meta{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+  .meta .tag{background:var(--chip);color:var(--brand);font-size:12px;padding:3px 10px;border-radius:999px;font-weight:600}
+  .req{background:var(--bg);border-left:3px solid var(--brand);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0}
+  .req li{margin:4px 0}
+  .timer{font-variant-numeric:tabular-nums;font-size:30px;font-weight:700;letter-spacing:1px}
+  .timer.warn{color:var(--bad)}
+  .timerbar{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:6px}
+  .timerbar > i{display:block;height:100%;background:var(--brand);transition:width .3s}
+  textarea{width:100%;min-height:150px;padding:12px;border:1px solid var(--line);border-radius:10px;
+    background:var(--bg);color:var(--fg);font-family:inherit;font-size:15px;resize:vertical}
+  .reveal{margin-top:16px;border-top:1px dashed var(--line);padding-top:14px}
+  .reveal h4{margin:14px 0 8px;color:var(--brand2);font-size:15px}
+  .phrase{background:var(--chip);border-radius:8px;padding:8px 12px;margin:6px 0;font-size:14px}
+  .phrase b{color:var(--brand)}
+  ol.steps{counter-reset:s;list-style:none;padding:0;margin:8px 0}
+  ol.steps li{counter-increment:s;padding:6px 0 6px 34px;position:relative}
+  ol.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:24px;height:24px;
+    background:var(--brand);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+  .mcq{margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+  .mcq .q{font-weight:600;margin-bottom:10px}
+  .mcq label{display:block;padding:9px 12px;margin:6px 0;border:1px solid var(--line);border-radius:8px;cursor:pointer;font-size:14px}
+  .mcq label:hover{border-color:var(--brand)}
+  .mcq label.correct{border-color:var(--ok);background:rgba(22,163,74,.12)}
+  .mcq label.wrong{border-color:var(--bad);background:rgba(220,38,38,.10)}
+  .mcq .exp{font-size:13px;color:var(--muted);margin-top:8px;display:none}
+  .mcq .exp.show{display:block}
+  .score{font-size:14px;color:var(--muted)}
+  .score b{color:var(--ok)}
+  audio{width:100%;margin-top:8px}
+  .hint{font-size:13px;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:12px 0}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:380px;max-width:90vw;background:var(--card);
+    border-left:1px solid var(--line);box-shadow:-8px 0 24px rgba(0,0,0,.18);transform:translateX(100%);
+    transition:transform .25s;z-index:50;display:flex;flex-direction:column}
+  .drawer.open{transform:translateX(0)}
+  .drawer header{padding:16px;display:flex;align-items:center;border-bottom:1px solid var(--line)}
+  .drawer header h3{margin:0;font-size:16px;flex:1}
+  .drawer .body{padding:14px;overflow:auto;flex:1}
+  .drawer .search{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);margin-bottom:10px}
+  .cat{font-weight:700;color:var(--brand2);margin:12px 0 6px;font-size:14px}
+  .hidden{display:none!important}
+  .pill{display:inline-block;font-size:12px;padding:2px 9px;border-radius:999px;background:var(--chip);color:var(--brand);margin-left:6px}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hwrap">
+    <h1>🏆 TOEFL 2026 · 练习台</h1>
+    <p>随机抽题 · 限时模拟 · 写作口语可接 AI 批改 · 阅读听力即点即判。题库共 <span id="totalCount">—</span> 题。</p>
+    <div class="tabs">
+      <button data-skill="writing" class="active">✍️ 写作</button>
+      <button data-skill="speaking">🎤 口语</button>
+      <button data-skill="reading">📖 阅读</button>
+      <button data-skill="listening">🎧 听力</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- 写作 -->
+  <section id="writing" class="card">
+    <div class="toolbar">
+      <button class="btn primary" id="wDrawEmail">🎲 抽一封邮件题</button>
+      <button class="btn primary" id="wDrawAcademic">🎲 抽一道学术讨论</button>
+      <span class="spacer"></span>
+      <button class="btn" id="openPhrases">📚 高分语料卡</button>
+    </div>
+    <div id="wBox"><p class="hint">点上面按钮抽一道写作题。邮件限时 7 分钟，学术讨论限时 10 分钟。</p></div>
+  </section>
+
+  <!-- 口语 -->
+  <section id="speaking" class="card hidden">
+    <div class="toolbar">
+      <button class="btn primary" id="sDrawInterview">🎲 抽一道访谈题</button>
+      <button class="btn primary" id="sDrawRepeat">🎲 听后复述句库</button>
+      <span class="spacer"></span>
+      <button class="btn" id="openPhrases2">📚 高分语料卡</button>
+    </div>
+    <div id="sBox"><p class="hint">访谈题无准备时间、每题 45 秒；复述题先听/读句子再遮住原文复述。</p></div>
+  </section>
+
+  <!-- 阅读 -->
+  <section id="reading" class="card hidden">
+    <div class="toolbar">
+      <button class="btn primary" id="rDraw">🎲 抽一篇阅读</button>
+      <span class="spacer"></span>
+      <span class="score" id="rScore"></span>
+    </div>
+    <div id="rBox"><p class="hint">ETS 风格练习文（非官方真题）。读完后逐题选择，即时看解析。</p></div>
+  </section>
+
+  <!-- 听力 -->
+  <section id="listening" class="card hidden">
+    <div class="toolbar">
+      <button class="btn primary" id="lDraw">🎲 抽一篇听力</button>
+      <span class="spacer"></span>
+      <span class="score" id="lScore"></span>
+    </div>
+    <div id="lBox"><p class="hint">文字稿练习素材，建议配合官方/免费音频使用（见仓库资源页）。读稿后逐题选择。</p></div>
+  </section>
+</main>
+
+<div class="drawer" id="phraseDrawer">
+  <header><h3>📚 高分语料卡</h3><button class="btn" onclick="closePhrases()">关闭</button></header>
+  <div class="body">
+    <input class="search" id="phraseSearch" placeholder="搜索短语或用法…">
+    <div id="phraseList"></div>
+  </div>
+</div>
+
+<script src="bank/data.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const el = (tag, html) => { const e=document.createElement(tag); if(html!=null) e.innerHTML=html; return e; };
+const esc = s => (s||'').replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+let timer = null;
+function stopTimer(){ if(timer){clearInterval(timer); timer=null;} }
+function startTimer(secs, onTick){
+  stopTimer();
+  let left = secs;
+  const tick = () => {
+    const m = String(Math.floor(left/60)).padStart(2,'0');
+    const s = String(left%60).padStart(2,'0');
+    onTick(`${m}:${s}`, left, secs);
+    if(left<=0){ stopTimer(); return; }
+    left--;
+  };
+  tick();
+  timer = setInterval(tick, 1000);
+}
+function parseTime(str){
+  if(!str) return 0;
+  const m = str.match(/(\d+)\s*分钟/); if(m) return parseInt(m[1])*60;
+  const s = str.match(/(\d+)\s*秒/); if(s) return parseInt(s[1]);
+  return 0;
+}
+function shuffle(a){return a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(p=>p[1]);}
+
+// ---------- 写作 ----------
+function drawWriting(kind){
+  const arr = BANK.writing[kind];
+  const it = arr[Math.floor(Math.random()*arr.length)];
+  const box = $('#wBox');
+  box.innerHTML = '';
+  const tags = `<div class="meta">
+    <span class="tag">${esc(it.id)}</span>
+    <span class="tag">${esc(it.time||'')}</span>
+    ${it.difficulty?`<span class="tag">难度 ${esc(it.difficulty)}</span>`:''}
+    ${it.topic?`<span class="tag">话题 ${esc(it.topic)}</span>`:''}
+  </div>`;
+  box.insertAdjacentHTML('beforeend', `<h3>${esc(it.title)}</h3>${tags}`);
+  box.insertAdjacentHTML('beforeend', `<p><b>情境：</b>${esc(it.situation)}</p>`);
+  if(it.requirements && it.requirements.length){
+    box.insertAdjacentHTML('beforeend', `<div class="req"><b>内容要求：</b><ol>${it.requirements.map(r=>`<li>${esc(r)}</li>`).join('')}</ol></div>`);
+  }
+  // timer
+  const tsec = parseTime(it.time);
+  const tWrap = el('div'); tWrap.innerHTML = `<div class="timer" id="wTimer">--:--</div><div class="timerbar"><i id="wTimerBar"></i></div>`;
+  box.appendChild(tWrap);
+  if(tsec) startTimer(tsec, (txt,left,total)=>{
+    const t=$('#wTimer'); t.textContent=txt; t.classList.toggle('warn', left<=30);
+    $('#wTimerBar').style.width = (100*left/total)+'%';
+  });
+  // draft
+  const ta = el('textarea'); ta.placeholder='在这里写你的答案…（自动保存在本机浏览器）';
+  ta.value = localStorage.getItem('draft_'+it.id) || '';
+  ta.addEventListener('input', ()=>localStorage.setItem('draft_'+it.id, ta.value));
+  box.appendChild(el('p', '<b>✍️ 你的草稿：</b>'));
+  box.appendChild(ta);
+  // actions
+  const act = el('div',''); act.style.marginTop='12px'; act.style.display='flex'; act.style.gap='10px'; act.style.flexWrap='wrap';
+  const copyBtn = el('button','📋 复制题目给 AI 批改'); copyBtn.className='btn gold';
+  copyBtn.onclick = ()=>copyWritingPrompt(it);
+  const revealBtn = el('button','💡 显示满分范文 + 语料 + 结构'); revealBtn.className='btn';
+  act.appendChild(copyBtn); act.appendChild(revealBtn);
+  box.appendChild(act);
+  // reveal area
+  const rev = el('div',''); rev.className='reveal hidden'; rev.id='wReveal';
+  rev.appendChild(el('h4','满分范文'));
+  rev.appendChild(el('div', `<div class="phrase" style="white-space:pre-wrap">${esc(it.model)}</div>`));
+  if(it.phrases && it.phrases.length){
+    rev.appendChild(el('h4','高分短语'));
+    it.phrases.forEach(p=>rev.appendChild(el('div','',`<div class="phrase"><b>${esc(p.p)}</b> → ${esc(p.n)}</div>`)));
+  }
+  if(it.structure && it.structure.length){
+    rev.appendChild(el('h4','结构拆解'));
+    rev.appendChild(el('ol','',it.structure.map(s=>`<li>${esc(s)}</li>`).join(''))); rev.lastChild.className='steps';
+  }
+  box.appendChild(rev);
+  revealBtn.onclick = ()=>{ rev.classList.toggle('hidden'); revealBtn.textContent = rev.classList.contains('hidden')?'💡 显示满分范文 + 语料 + 结构':'🙈 隐藏答案'; };
+}
+function copyWritingPrompt(it){
+  let txt = `【TOEFL 写作模拟题】\n题目：${it.title}\n情境：${it.situation}\n`;
+  if(it.requirements&&it.requirements.length) txt += '内容要求：\n'+it.requirements.map(r=>'- '+r).join('\n')+'\n';
+  if(it.time) txt += `限时：${it.time}\n`;
+  txt += '\n请按官方评分维度批改下面我的回答，逐句指出问题并给修改建议：\n\n（在此粘贴你的答案）';
+  navigator.clipboard.writeText(txt).then(()=>alert('题目已复制！粘贴到 ai_coach.py 或任意 AI 对话框，再贴上你的答案即可批改。'))
+    .catch(()=>{ prompt('复制失败，请手动复制：', txt); });
+}
+$('#wDrawEmail').onclick = ()=>drawWriting('email');
+$('#wDrawAcademic').onclick = ()=>drawWriting('academic');
+
+// ---------- 口语：访谈 ----------
+function drawInterview(){
+  const arr = BANK.speaking.interview;
+  const it = arr[Math.floor(Math.random()*arr.length)];
+  const box = $('#sBox'); box.innerHTML='';
+  box.insertAdjacentHTML('beforeend', `<div class="meta">
+    <span class="tag">${esc(it.id)}</span><span class="tag">${esc(it.time||'')}</span>
+    ${it.type?`<span class="tag">${esc(it.type)}</span>`:''}
+    ${it.material?`<span class="tag">素材 ${esc(it.material)}</span>`:''}
+  </div>`);
+  box.insertAdjacentHTML('beforeend', `<h3>🎤 ${esc(it.question)}</h3>`);
+  const tsec = parseTime(it.time);
+  const tWrap = el('div'); tWrap.innerHTML=`<div class="timer" id="sTimer">--:--</div><div class="timerbar"><i id="sTimerBar"></i></div>`;
+  box.appendChild(tWrap);
+  if(tsec) startTimer(tsec, (txt,left,total)=>{ const t=$('#sTimer'); t.textContent=txt; t.classList.toggle('warn',left<=10); $('#sTimerBar').style.width=(100*left/total)+'%'; });
+  // recorder
+  const rec = el('div',''); rec.style.margin='12px 0';
+  const recBtn = el('button','🎙️ 开始录音'); recBtn.className='btn primary';
+  const recMsg = el('p',''); recMsg.className='hint';
+  rec.appendChild(recBtn); rec.appendChild(recMsg);
+  box.appendChild(rec);
+  let recorder=null, chunks=[], audioUrl=null;
+  recBtn.onclick = async ()=>{
+    if(recorder && recorder.state==='recording'){
+      recorder.stop(); recBtn.textContent='🎙️ 开始录音'; return;
+    }
+    try{
+      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+      recorder = new MediaRecorder(stream); chunks=[];
+      recorder.ondataavailable = e=>chunks.push(e.data);
+      recorder.onstop = ()=>{
+        if(audioUrl) URL.revokeObjectURL(audioUrl);
+        audioUrl = URL.createObjectURL(new Blob(chunks, {type:'audio/webm'}));
+        const a = el('audio'); a.controls=true; a.src=audioUrl;
+        const prev = box.querySelector('audio'); if(prev) prev.remove();
+        box.appendChild(el('p','<b>🔁 回放（对比示范答案找差距）：</b>')); box.appendChild(a);
+        stream.getTracks().forEach(t=>t.stop());
+      };
+      recorder.start(); recBtn.textContent='⏹️ 停止录音'; recMsg.textContent='录音中…说完点停止。';
+    }catch(e){ recMsg.textContent='无法录音（浏览器可能未授权麦克风，或页面非 https）。可直接口头练习。'; }
+  };
+  // reveal model
+  const rev = el('div',''); rev.className='reveal hidden'; rev.id='sReveal';
+  rev.appendChild(el('h4','示范回答'));
+  rev.appendChild(el('div','',`<div class="phrase" style="white-space:pre-wrap">${esc(it.model)}</div>`));
+  if(it.structure&&it.structure.length){ rev.appendChild(el('h4','应答结构')); rev.appendChild(el('ol','',it.structure.map(s=>`<li>${esc(s)}</li>`).join(''))); rev.lastChild.className='steps'; }
+  box.appendChild(rev);
+  const revBtn = el('button','💡 显示示范回答 + 结构'); revBtn.className='btn'; revBtn.style.marginTop='10px';
+  revBtn.onclick=()=>{ rev.classList.toggle('hidden'); revBtn.textContent=rev.classList.contains('hidden')?'💡 显示示范回答 + 结构':'🙈 隐藏答案'; };
+  box.appendChild(revBtn);
+}
+// ---------- 口语：复述句库 ----------
+function drawRepeat(){
+  const levels = BANK.speaking.repeat;
+  const box = $('#sBox'); box.innerHTML='';
+  const sel = el('div',''); sel.style.display='flex'; sel.style.gap='8px'; sel.style.flexWrap='wrap'; sel.style.marginBottom='12px';
+  levels.forEach((lv,i)=>{
+    const b=el('button', lv.level); b.className='btn'+(i===0?' primary':'');
+    b.onclick=()=>{ [...sel.children].forEach(c=>c.className='btn'); b.className='btn primary'; renderRepeat(lv, box, sel); };
+    sel.appendChild(b);
+  });
+  box.appendChild(sel);
+  renderRepeat(levels[0], box, sel);
+}
+function renderRepeat(lv, box, sel){
+  box.querySelectorAll('.repeat-area').forEach(e=>e.remove());
+  const area = el('div',''); area.className='repeat-area';
+  const list = shuffle(lv.sentences);
+  let idx = 0;
+  const show = el('div',''); area.appendChild(show);
+  const prev = el('button','⬅️ 上一句'); prev.className='btn'; prev.style.marginRight='8px';
+  const next = el('button','下一句 ➡️'); next.className='btn primary';
+  const flip = el('button','👁️ 显示原句'); flip.className='btn';
+  const nav = el('div',''); nav.style.marginTop='10px'; nav.appendChild(prev); nav.appendChild(next); nav.appendChild(flip);
+  area.appendChild(nav);
+  const render = ()=>{
+    const s = list[idx];
+    show.innerHTML = `<div class="req" style="font-size:18px;background:var(--chip);border-color:var(--brand)">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:6px">句子 ${idx+1}/${list.length}</div>
+      <span class="hidden orig" style="white-space:pre-wrap">${esc(s)}</span>
+      <span class="masked" style="letter-spacing:2px;color:var(--muted)">${'▒'.repeat(Math.min(s.length,40))}</span>
+    </div>`;
+  };
+  render();
+  prev.onclick=()=>{ if(idx>0){idx--;render();} };
+  next.onclick=()=>{ if(idx<list.length-1){idx++;render();} };
+  flip.onclick=()=>{ const o=show.querySelector('.orig'), m=show.querySelector('.masked');
+    const hid=o.classList.toggle('hidden'); m.classList.toggle('hidden', !hid); flip.textContent=hid?'👁️ 显示原句':'🙈 遮住原句'; };
+  box.appendChild(area);
+}
+$('#sDrawInterview').onclick = drawInterview;
+$('#sDrawRepeat').onclick = drawRepeat;
+
+// ---------- 阅读 / 听力（MCQ） ----------
+function renderMCQ(item, kind){
+  const box = $('#'+kind[0]+'Box'); box.innerHTML='';
+  box.insertAdjacentHTML('beforeend', `<h3>${esc(item.title)}</h3>`);
+  box.insertAdjacentHTML('beforeend', `<div class="hint">${kind==='reading'?'📖 阅读文本（练习用，非官方真题）：':'🎧 听力文字稿（配合官方/免费音频使用）：'}</div>`);
+  const pre = el('div','',`<div class="phrase" style="white-space:pre-wrap;line-height:1.8">${esc(item.passage)}</div>`);
+  box.appendChild(pre);
+  const scoreTag = $('#'+kind[0]+'Score');
+  let done=0, correct=0;
+  const updateScore=()=>{ if(done) scoreTag.innerHTML = `本题已答 <b>${done}</b> / ${item.questions.length} ，正确 <b>${correct}</b>`; };
+  item.questions.forEach((q,qi)=>{
+    const card = el('div',''); card.className='mcq';
+    card.appendChild(el('div','',`<div class="q">${qi+1}. ${esc(q.q)}</div>`));
+    const letters=['A','B','C','D'];
+    q.options.forEach(o=>{
+      const lab = el('label','');
+      lab.innerHTML = `<input type="radio" name="q${qi}" value="${o.key}"> <b>${o.key}.</b> ${esc(o.text)}`;
+      lab.querySelector('input').onchange = ()=>{
+        if(card.dataset.answered) return;
+        card.dataset.answered='1'; done++;
+        const right = (o.key===q.answer);
+        if(right) correct++;
+        // mark
+        card.querySelectorAll('label').forEach(l=>{
+          const k=l.querySelector('input').value;
+          if(k===q.answer) l.classList.add('correct');
+          else if(k===o.key && !right) l.classList.add('wrong');
+          l.querySelector('input').disabled=true;
+        });
+        const exp = el('div','',`${right?'✅ 正确。':'❌ 正确答案 '+q.answer+'。'} ${esc(q.explain)}`);
+        exp.className='exp show'; card.appendChild(exp);
+        updateScore();
+      };
+      card.appendChild(lab);
+    });
+    box.appendChild(card);
+  });
+  updateScore();
+}
+$('#rDraw').onclick = ()=>renderMCQ(shuffle(BANK.reading)[0], 'reading');
+$('#lDraw').onclick = ()=>renderMCQ(shuffle(BANK.listening)[0], 'listening');
+
+// ---------- 语料卡 ----------
+function renderPhrases(filter=''){
+  const list = $('#phraseList'); list.innerHTML='';
+  BANK.phrases.forEach(cat=>{
+    const items = cat.items.filter(it=> !filter || (it.p+it.n).toLowerCase().includes(filter.toLowerCase()));
+    if(!items.length) return;
+    list.appendChild(el('div',`<div class="cat">${esc(cat.category)}</div>`));
+    items.forEach(it=>list.appendChild(el('div','',`<div class="phrase"><b>${esc(it.p)}</b> → ${esc(it.n)}</div>`)));
+  });
+}
+function openPhrases(){ $('#phraseDrawer').classList.add('open'); renderPhrases($('#phraseSearch').value); }
+function closePhrases(){ $('#phraseDrawer').classList.remove('open'); }
+$('#openPhrases').onclick=openPhrases; $('#openPhrases2').onclick=openPhrases;
+$('#phraseSearch').oninput = e=>renderPhrases(e.target.value);
+
+// ---------- 切换技能 ----------
+$$('.tabs button').forEach(b=>b.onclick=()=>{
+  $$('.tabs button').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  const skill=b.dataset.skill;
+  ['writing','speaking','reading','listening'].forEach(s=>{
+    $('#'+s).classList.toggle('hidden', s!==skill);
+  });
+  stopTimer();
+});
+// init
+$('#totalCount').textContent = (BANK.writing.email.length+BANK.writing.academic.length+BANK.speaking.interview.length+BANK.speaking.repeat.reduce((a,l)=>a+l.sentences.length,0)+BANK.reading.length+BANK.listening.length);
+</script>
+</body>
+</html>
