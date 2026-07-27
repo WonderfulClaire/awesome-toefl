@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" width="1200" height="560">
+  <defs>
+    <linearGradient id="badgeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f8fafc"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arrowHead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="600" y="46" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="700" fill="#111827">🗺️ 学习路线图</text>
+  <text x="600" y="76" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#6b7280">从认知考试到出分复盘，6 步闭环</text>
+
+  <!-- Connecting arrows -->
+  <g stroke="#6b7280" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)">
+    <!-- 0 -> 1 -->
+    <path d="M400 168 L440 168"/>
+    <!-- 1 -> 2 -->
+    <path d="M760 168 L800 168"/>
+    <!-- 2 -> 3 -->
+    <path d="M960 236 L960 286 L960 300"/>
+    <!-- 3 -> 4 -->
+    <path d="M800 392 L760 392"/>
+    <!-- 4 -> 5 -->
+    <path d="M440 392 L400 392"/>
+  </g>
+
+  <!-- Step 0 -->
+  <g transform="translate(80,120)">
+    <rect width="320" height="140" rx="16" ry="16" fill="url(#cardGrad)" stroke="#e2e8f0" stroke-width="1.5" filter="url(#shadow)"/>
+    <circle cx="36" cy="36" r="18" fill="url(#badgeGrad)"/>
+    <text x="36" y="41" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="700" fill="#ffffff">0</text>
+    <text x="64" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="18" font-weight="700" fill="#111827">认知</text>
+    <text x="64" y="54" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="13" fill="#64748b">新版考试完全解读</text>
+    <text x="24" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="14" fill="#4b5563">• 改革全貌与新旧对比</text>
+    <text x="24" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="14" fill="#4b5563">• 分数体系与目标设定</text>
+  </g>
+
+  <!-- Step 1 -->
+  <g transform="translate(440,120)">
+    <rect width="320" height="140" rx="16" ry="16" fill="url(#cardGrad)" stroke="#e2e8f0" stroke-width="1.5" filter="url(#shadow)"/>
+    <circle cx="36" cy="36" r="18" fill="url(#badgeGrad)"/>
+    <text x="36" y="41" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="700" fill="#ffffff">1</text>
+    <text x="64" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="18" font-weight="700" fill="#111827">规划</text>
+    <text x="64" y="54" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="13" fill="#64748b">测出基础分，选择备考计划</text>
+    <text x="24" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="14" fill="#4b5563">• 官方免费模考摸底</text>
+    <text x="24" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="14" fill="#4b5563">• 1 / 3 / 6 个月计划</text>
+  </g>
+
+  <!-- Step 2 -->
+  <g transform="translate(800,120)">
+    <rect width="320" height="140" rx="16" ry="16" fill="url(#cardGrad)" stroke="#e2e8f0" stroke-width="1.5" filter="url(#shadow)"/>
+    <circle cx="36" cy="36" r="18" fill="url(#badgeGrad)"/>
+    <text x="36" y="41" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="700" fill="#ffffff">2</text>
+    <text x="64" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="18" font-weight="700" fill="#111827">分项突破</text>
+    <text x="64" y="54" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="13" fill="#64748b">词汇 → 阅读 → 听力 → 口语 → 写作</text>
+    <text x="24" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="14" fill="#4b5563">• 每科「能力 + 策略 + 模板」</text>
+    <text x="24" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="14" fill="#4b5563">• 自适应考试针对性训练</text>
+  </g>
+
+  <!-- Step 3 -->
+  <g transform="translate(800,300)">
+    <rect width="320" height="140" rx="16" ry="16" fill="url(#cardGrad)" stroke="#e2e8f0" stroke-width="1.5" filter="url(#shadow)"/>
+    <circle cx="36" cy="36" r="18" fill="url(#badgeGrad)"/>
+    <text x="36" y="41" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="700" fill="#ffffff">3</text>
+    <text x="64" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="18" font-weight="700" fill="#111827">AI 陪练 + 模考</text>
+    <text x="64" y="54" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="13" fill="#64748b">把 AI 变成私人外教</text>
+    <text x="24" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="14" fill="#4b5563">• 提示词工作流批改口语写作</text>
+    <text x="24" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="14" fill="#4b5563">• 官方模考 + 错题本复盘</text>
+  </g>
+
+  <!-- Step 4 -->
+  <g transform="translate(440,300)">
+    <rect width="320" height="140" rx="16" ry="16" fill="url(#cardGrad)" stroke="#e2e8f0" stroke-width="1.5" filter="url(#shadow)"/>
+    <circle cx="36" cy="36" r="18" fill="url(#badgeGrad)"/>
+    <text x="36" y="41" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="700" fill="#ffffff">4</text>
+    <text x="64" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="18" font-weight="700" fill="#111827">考场实战</text>
+    <text x="64" y="54" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="13" fill="#64748b">考前清单与考场流程</text>
+    <text x="24" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="14" fill="#4b5563">• 报名、送分、复议流程</text>
+    <text x="24" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="14" fill="#4b5563">• 时间管理与应急预案</text>
+  </g>
+
+  <!-- Step 5 -->
+  <g transform="translate(80,300)">
+    <rect width="320" height="140" rx="16" ry="16" fill="url(#cardGrad)" stroke="#e2e8f0" stroke-width="1.5" filter="url(#shadow)"/>
+    <circle cx="36" cy="36" r="18" fill="url(#badgeGrad)"/>
+    <text x="36" y="41" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="700" fill="#ffffff">5</text>
+    <text x="64" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="18" font-weight="700" fill="#111827">出分复盘</text>
+    <text x="64" y="54" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="13" fill="#64748b">复盘或规划下一战</text>
+    <text x="24" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="14" fill="#4b5563">• 成绩单拆解与弱项定位</text>
+    <text x="24" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="14" fill="#4b5563">• 下一轮备考迭代计划</text>
+  </g>
+</svg>
