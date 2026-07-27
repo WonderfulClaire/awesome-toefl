@@ -30,10 +30,7 @@
 
 ## 🗺️ 学习路线图
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/toefl-roadmap-dark.svg">
-  <img src="assets/toefl-roadmap-light.svg" alt="TOEFL 2026 学习路线图：认知 → 规划 → 分项突破 → AI 陪练 + 模考 → 考场实战 → 出分复盘" width="100%">
-</picture>
+<img src="assets/toefl-roadmap.svg" alt="TOEFL 2026 学习路线图：认知 → 规划 → 分项突破 → AI 陪练 + 模考 → 考场实战 → 出分复盘" width="100%">
 
 ---
 
