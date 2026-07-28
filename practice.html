@@ -75,18 +75,28 @@
   .cat{font-weight:700;color:var(--brand2);margin:12px 0 6px;font-size:14px}
   .hidden{display:none!important}
   .pill{display:inline-block;font-size:12px;padding:2px 9px;border-radius:999px;background:var(--chip);color:var(--brand);margin-left:6px}
+  .aiResult{margin-top:12px;padding:12px 14px;border:1px solid var(--line);border-left:3px solid var(--gold);
+    border-radius:0 10px 10px 0;background:var(--bg);white-space:pre-wrap;font-size:14px;line-height:1.8}
+  dialog{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+    max-width:440px;width:92%;box-shadow:var(--shadow)}
+  dialog::backdrop{background:rgba(0,0,0,.5)}
+  dialog label{display:block;margin:10px 0 4px;color:var(--muted);font-size:13px}
+  dialog input,dialog select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;
+    background:var(--bg);color:var(--fg);font-size:14px}
+  dialog .row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
 </style>
 </head>
 <body>
 <header class="hero">
   <div class="hwrap">
     <h1>🏆 TOEFL 2026 · 练习台</h1>
-    <p>随机抽题 · 限时模拟 · 写作口语可接 AI 批改 · 阅读听力即点即判。题库共 <span id="totalCount">—</span> 题。</p>
+    <p>随机抽题 · 限时模拟 · 写作口语页面内 AI 批改 · 阅读听力即点即判 + 错因分析。题库共 <span id="totalCount">—</span> 题。</p>
     <div class="tabs">
       <button data-skill="writing" class="active">✍️ 写作</button>
       <button data-skill="speaking">🎤 口语</button>
       <button data-skill="reading">📖 阅读</button>
       <button data-skill="listening">🎧 听力</button>
+      <button id="aiCfgBtn" style="margin-left:auto">⚙ AI 接口</button>
     </div>
   </div>
 </header>
@@ -135,6 +145,30 @@
   </section>
 </main>
 
+<dialog id="aiCfg">
+  <h3 style="margin:4px 0">🤖 AI 接口设置</h3>
+  <p style="font-size:13px;color:var(--muted);margin:6px 0">与 <code>tools/coach.html</code> 共用同一份配置，填一次两边都能用；Key 只保存在本机浏览器，不会发往任何第三方。</p>
+  <label>服务商预设</label>
+  <select id="aiProvider">
+    <option value="https://api.deepseek.com/v1|deepseek-chat">DeepSeek（deepseek-chat）</option>
+    <option value="https://api.moonshot.cn/v1|kimi-latest">Kimi（kimi-latest）</option>
+    <option value="https://dashscope.aliyuncs.com/compatible-mode/v1|qwen-plus">通义千问（qwen-plus）</option>
+    <option value="https://open.bigmodel.cn/api/paas/v4|glm-4-flash">智谱 GLM（glm-4-flash）</option>
+    <option value="https://api.openai.com/v1|gpt-4o-mini">OpenAI（gpt-4o-mini）</option>
+    <option value="custom">自定义…</option>
+  </select>
+  <label>接口地址（OpenAI 兼容 base URL）</label>
+  <input id="aiBaseUrl" placeholder="https://api.deepseek.com/v1">
+  <label>模型名</label>
+  <input id="aiModel" placeholder="deepseek-chat">
+  <label>API Key（仅保存在本机浏览器）</label>
+  <input id="aiKey" type="password" placeholder="sk-...">
+  <div class="row">
+    <button class="btn" id="aiCfgCancel">取消</button>
+    <button class="btn primary" id="aiCfgSave">保存</button>
+  </div>
+</dialog>
+
 <div class="drawer" id="phraseDrawer">
   <header><h3>📚 高分语料卡</h3><button class="btn" onclick="closePhrases()">关闭</button></header>
   <div class="body">
@@ -173,6 +207,94 @@ function parseTime(str){
 }
 function shuffle(a){return a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(p=>p[1]);}
 
+// ---------- AI 直连（与 tools/coach.html 共用 localStorage 配置，coach.* 键） ----------
+const aiStore = {
+  get: k => localStorage.getItem('coach.'+k) || '',
+  set: (k,v) => localStorage.setItem('coach.'+k, v),
+};
+function aiReady(){ return aiStore.get('baseUrl') && aiStore.get('apiKey') && aiStore.get('model'); }
+function openAiCfg(){
+  $('#aiBaseUrl').value = aiStore.get('baseUrl');
+  $('#aiModel').value = aiStore.get('model');
+  $('#aiKey').value = aiStore.get('apiKey');
+  $('#aiCfg').showModal();
+}
+$('#aiCfgBtn').onclick = openAiCfg;
+$('#aiProvider').onchange = ()=>{
+  const v = $('#aiProvider').value;
+  if(v==='custom') return;
+  const [url, model] = v.split('|');
+  $('#aiBaseUrl').value = url; $('#aiModel').value = model;
+};
+$('#aiCfgSave').onclick = ()=>{
+  aiStore.set('baseUrl', $('#aiBaseUrl').value.trim());
+  aiStore.set('model', $('#aiModel').value.trim());
+  aiStore.set('apiKey', $('#aiKey').value.trim());
+  $('#aiCfg').close();
+};
+$('#aiCfgCancel').onclick = ()=>$('#aiCfg').close();
+
+// 流式调用：把 AI 回复逐字写进 targetEl；失败时提示跨域退路
+async function aiStream(prompt, targetEl, btn){
+  if(!aiReady()){ openAiCfg(); return; }
+  if(btn) btn.disabled = true;
+  targetEl.classList.remove('hidden');
+  targetEl.textContent = '🤖 批改中…';
+  try{
+    const res = await fetch(aiStore.get('baseUrl').replace(/\/$/,'')+'/chat/completions', {
+      method:'POST',
+      headers:{'Content-Type':'application/json', Authorization:'Bearer '+aiStore.get('apiKey')},
+      body: JSON.stringify({model: aiStore.get('model'), messages:[{role:'user', content:prompt}], stream:true}),
+    });
+    if(!res.ok){
+      const body = (await res.text()).slice(0,200);
+      throw new Error(`HTTP ${res.status} ${body}${res.status===401?'（检查 API Key）':''}`);
+    }
+    const reader = res.body.getReader(), decoder = new TextDecoder();
+    let reply='', pending='';
+    for(;;){
+      const {done, value} = await reader.read();
+      if(done) break;
+      pending += decoder.decode(value, {stream:true});
+      const lines = pending.split('\n'); pending = lines.pop();
+      for(const raw of lines){
+        const line = raw.trim();
+        if(!line.startsWith('data:')) continue;
+        const payload = line.slice(5).trim();
+        if(payload==='[DONE]') continue;
+        try{
+          const piece = JSON.parse(payload).choices?.[0]?.delta?.content ?? '';
+          if(piece){ reply += piece; targetEl.textContent = reply; }
+        }catch(_){/* 忽略不完整分片 */}
+      }
+    }
+    if(!reply) targetEl.textContent = '（空回复，请重试）';
+  }catch(err){
+    targetEl.textContent = '⚠ 请求失败：'+err.message+
+      '\n若是跨域（CORS/Failed to fetch）问题，该平台不支持浏览器直连，请用下面的【📋 复制】按钮或终端版 tools/ai_coach.py。';
+  }finally{
+    if(btn) btn.disabled = false;
+  }
+}
+
+// 与 tools/ai_coach.py grade 模式同源的评分维度
+const WRITING_RUBRIC = '邮件：内容点是否全覆盖、语域（正式度）是否正确、格式是否规范；学术讨论：是否直接回应教授、是否有说透的理由、是否与同学观点互动、语法多样性。';
+function writingGradePrompt(it, answer){
+  let extra = '';
+  if(it.phrases && it.phrases.length) extra += '\n参考高分短语：'+it.phrases.map(p=>`${p.p}（${p.n}）`).join('；');
+  if(it.structure && it.structure.length) extra += '\n参考结构：'+it.structure.join('；');
+  return `你是托福写作考官，请按官方评分维度批改下面这篇作答。像真评分官一样吝啬分数，不要客套。\n`+
+    `【题目】${it.title}\n【情境】${it.situation||''}\n`+
+    `【内容要求】\n${(it.requirements||[]).map(r=>'- '+r).join('\n')}\n【限时】${it.time||''}\n${extra}\n\n`+
+    `【评分维度】${WRITING_RUBRIC}\n\n【考生作答】\n${answer}\n\n`+
+    `请给出：① 总分（满分30的对应档位，或直接给 1–6 分制印象分）；② 逐句/逐段指出问题；③ 具体修改建议；④ 一句最该改的点。`;
+}
+function speakingGradePrompt(it, answer){
+  return `你是托福口语考官，请批改这段 45 秒应答（无准备时间，以下为考生录音后自己敲出的文字稿）。\n`+
+    `【题目】${it.question}\n【类型】${it.type||''}\n【可挂素材】${it.material||''}\n\n【考生作答】\n${answer}\n\n`+
+    `请按语言维度批改：流利度（从用词重复/卡顿痕迹推断）、语法准确性、词汇、切题与展开。`+    `给出：① 总体印象分（1–6 分制）；② 最伤分的 1–2 个问题；③ 一句更地道的重述建议。`;
+}
+
 // ---------- 写作 ----------
 function drawWriting(kind){
   const arr = BANK.writing[kind];
@@ -206,11 +328,20 @@ function drawWriting(kind){
   box.appendChild(ta);
   // actions
   const act = el('div',''); act.style.marginTop='12px'; act.style.display='flex'; act.style.gap='10px'; act.style.flexWrap='wrap';
-  const copyBtn = el('button','📋 复制题目给 AI 批改'); copyBtn.className='btn gold';
+  const aiBtn = el('button','🤖 AI 当场批改'); aiBtn.className='btn gold';
+  const aiOut = el('div',''); aiOut.className='aiResult hidden';
+  aiBtn.onclick = ()=>{
+    const answer = ta.value.trim();
+    if(!answer){ alert('先在上面写完草稿再批改。'); return; }
+    stopTimer();
+    aiStream(writingGradePrompt(it, answer), aiOut, aiBtn);
+  };
+  const copyBtn = el('button','📋 复制题目去外部 AI 批改'); copyBtn.className='btn';
   copyBtn.onclick = ()=>copyWritingPrompt(it);
   const revealBtn = el('button','💡 显示满分范文 + 语料 + 结构'); revealBtn.className='btn';
-  act.appendChild(copyBtn); act.appendChild(revealBtn);
+  act.appendChild(aiBtn); act.appendChild(copyBtn); act.appendChild(revealBtn);
   box.appendChild(act);
+  box.appendChild(aiOut);
   // reveal area
   const rev = el('div',''); rev.className='reveal hidden'; rev.id='wReveal';
   rev.appendChild(el('h4','满分范文'));
@@ -278,6 +409,24 @@ function drawInterview(){
       recorder.start(); recBtn.textContent='⏹️ 停止录音'; recMsg.textContent='录音中…说完点停止。';
     }catch(e){ recMsg.textContent='无法录音（浏览器可能未授权麦克风，或页面非 https）。可直接口头练习。'; }
   };
+  // 文字稿 + AI 批改：听自己回放，把说的内容敲成文字交给 AI
+  const gradeWrap = el('div',''); gradeWrap.style.marginTop='14px';
+  gradeWrap.appendChild(el('p','<b>⌨️ 文字稿（听回放，把你说的原样敲下来，含卡壳重复也照敲，这样 AI 才能判流利度）：</b>'));
+  const tta = el('textarea'); tta.placeholder='例：Well, I... I usually prefer to study at home because, um, because it is quiet...';
+  tta.style.minHeight='90px';
+  gradeWrap.appendChild(tta);
+  const gAct = el('div',''); gAct.style.marginTop='10px'; gAct.style.display='flex'; gAct.style.gap='10px';
+  const gBtn = el('button','🤖 AI 当场批改'); gBtn.className='btn gold';
+  const gOut = el('div',''); gOut.className='aiResult hidden';
+  gBtn.onclick = ()=>{
+    const answer = tta.value.trim();
+    if(!answer){ alert('先把你的应答敲成文字再批改。'); return; }
+    stopTimer();
+    aiStream(speakingGradePrompt(it, answer), gOut, gBtn);
+  };
+  gAct.appendChild(gBtn);
+  gradeWrap.appendChild(gAct); gradeWrap.appendChild(gOut);
+  box.appendChild(gradeWrap);
   // reveal model
   const rev = el('div',''); rev.className='reveal hidden'; rev.id='sReveal';
   rev.appendChild(el('h4','示范回答'));
@@ -339,7 +488,23 @@ function renderMCQ(item, kind){
   box.appendChild(pre);
   const scoreTag = $('#'+kind[0]+'Score');
   let done=0, correct=0;
+  const wrongs = [];  // 记错：交给 AI 分析错因模式
   const updateScore=()=>{ if(done) scoreTag.innerHTML = `本题已答 <b>${done}</b> / ${item.questions.length} ，正确 <b>${correct}</b>`; };
+  // 全部答完后出现：AI 错因分析
+  const anaWrap = el('div',''); anaWrap.className='hidden'; anaWrap.style.marginTop='14px';
+  const anaBtn = el('button','🤖 AI 分析我的错因模式'); anaBtn.className='btn gold';
+  const anaOut = el('div',''); anaOut.className='aiResult hidden';
+  anaBtn.onclick = ()=>{
+    if(!wrongs.length){ anaOut.classList.remove('hidden'); anaOut.textContent='🎉 本题全对，没有错因可分析。抽下一篇保持手感！'; return; }
+    const list = wrongs.map((w,i)=>`${i+1}. 题目：${w.q}\n   我选：${w.chosen}（${w.chosenText}）\n   正确：${w.answer}\n   官方解析：${w.explain}`).join('\n');
+    const prompt = `你是托福${kind==='reading'?'阅读':'听力'}教练。我刚做完一篇「${item.title}」，`+
+      `${item.questions.length} 题错了 ${wrongs.length} 题，错题如下：\n\n${list}\n\n`+
+      `原文：\n${item.passage}\n\n`+
+      `请不要重复官方解析，而是：① 逐题指出我是被什么【干扰项套路】骗到的（如原词复现、偏限定、张冠李戴）；`+
+      `② 归纳我的错因模式（定位不准/词汇不认识/推理过度？）；③ 给出下次做题时的 1 条可执行纠偏动作。`;
+    aiStream(prompt, anaOut, anaBtn);
+  };
+  anaWrap.appendChild(anaBtn); anaWrap.appendChild(anaOut);
   item.questions.forEach((q,qi)=>{
     const card = el('div',''); card.className='mcq';
     card.appendChild(el('div','',`<div class="q">${qi+1}. ${esc(q.q)}</div>`));
@@ -352,6 +517,7 @@ function renderMCQ(item, kind){
         card.dataset.answered='1'; done++;
         const right = (o.key===q.answer);
         if(right) correct++;
+        else wrongs.push({q:q.q, chosen:o.key, chosenText:o.text, answer:q.answer, explain:q.explain});
         // mark
         card.querySelectorAll('label').forEach(l=>{
           const k=l.querySelector('input').value;
@@ -362,11 +528,13 @@ function renderMCQ(item, kind){
         const exp = el('div','',`${right?'✅ 正确。':'❌ 正确答案 '+q.answer+'。'} ${esc(q.explain)}`);
         exp.className='exp show'; card.appendChild(exp);
         updateScore();
+        if(done===item.questions.length) anaWrap.classList.remove('hidden');
       };
       card.appendChild(lab);
     });
     box.appendChild(card);
   });
+  box.appendChild(anaWrap);
   updateScore();
 }
 $('#rDraw').onclick = ()=>renderMCQ(shuffle(BANK.reading)[0], 'reading');
@@ -388,8 +556,8 @@ $('#openPhrases').onclick=openPhrases; $('#openPhrases2').onclick=openPhrases;
 $('#phraseSearch').oninput = e=>renderPhrases(e.target.value);
 
 // ---------- 切换技能 ----------
-$$('.tabs button').forEach(b=>b.onclick=()=>{
-  $$('.tabs button').forEach(x=>x.classList.remove('active'));
+$$('.tabs button[data-skill]').forEach(b=>b.onclick=()=>{
+  $$('.tabs button[data-skill]').forEach(x=>x.classList.remove('active'));
   b.classList.add('active');
   const skill=b.dataset.skill;
   ['writing','speaking','reading','listening'].forEach(s=>{

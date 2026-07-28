@@ -68,7 +68,7 @@
 
 光看不练等于没学。本仓库配套一套**可练、可改、可贡献**的题库与练习台：
 
-- 🖥️ **[在线练习台 practice.html](practice.html)** —— 单页应用，随机抽题 / 限时模拟 / 写作口语接 AI 批改 / 阅读听力即点即判，进度存本机。
+- 🖥️ **[在线练习台 practice.html](practice.html)** —— 单页应用，随机抽题 / 限时模拟 / 写作口语**页面内直接 AI 批改**（接你自己的 API Key，与 coach.html 共用配置）/ 阅读听力即点即判 + AI 错因分析，进度存本机。
 - 📦 **题库源文件**（`bank/`，Markdown，欢迎 PR 补题）：
   - ✍️ [写作 · 邮件（6 题）](bank/writing/email.md) ｜ [写作 · 学术讨论（8 题）](bank/writing/academic-discussion.md)
   - 🎤 [口语 · 访谈（14 题）](bank/speaking/interview.md) ｜ [口语 · 听后复述句库](bank/speaking/repeat-sentences.md)
@@ -76,7 +76,7 @@
   - 💎 [高分语料库（写作/口语/衔接）](bank/_phrases/phrases.md)
 - 🤖 **终端一键批改**：练完写作/口语，把答案存成 `.txt`，用现有 `ai_coach.py` 直接批改——
   ```bash
-  python tools/ai_coach.py grade --grade-skill writing --grade-kind academic \
+  python tools/ai_coach.py --grade-skill writing --grade-kind academic \
       --grade-id A-D01 --answer my_answer.txt
   ```
   （`--grade-kind` 写作填 `email`/`academic`，口语填 `interview`；无需手动拼提示词。）
