@@ -4,10 +4,13 @@
 把仓库 docs 里的 AI 提示词库直接接上你自己的大模型 API：
 选一个训练模式即自动加载对应提示词，开场引导建「考生档案」，
 内置错题账本（随时输入「复盘」查看错误模式汇总）。
+退出时自动把复盘写入 practice-log.md，下次启动自动加载上次遗留弱点——
+错题账本从单次对话升级为跨天训练闭环。
 
 用法：
     export AI_COACH_API_KEY="sk-..."      # Windows 用 setx AI_COACH_API_KEY "sk-..."
     python tools/ai_coach.py --provider deepseek
+    python tools/ai_coach.py --mode 14    # 直接进入 14 号模式，跳过菜单
 
 仅使用 Python 标准库（3.8+），无需 pip install。
 兼容一切 OpenAI 格式接口：--base-url + --model 可接任意服务。
@@ -37,6 +40,46 @@ PROVIDERS = {
 }
 
 ENV_KEY = "AI_COACH_API_KEY"
+LOG_NAME = "practice-log.md"
+
+# ---------------------------------------------------------------------------
+# 练习日志：跨天训练闭环
+# ---------------------------------------------------------------------------
+
+
+def log_path() -> Path:
+    return Path(__file__).resolve().parent.parent / LOG_NAME
+
+
+def load_last_review() -> str:
+    """读取上次训练的复盘块（日志里最后一个 ## 会话）。"""
+    path = log_path()
+    if not path.exists():
+        return ""
+    text = path.read_text(encoding="utf-8").strip()
+    blocks = re.split(r"^## ", text, flags=re.M)
+    return ("## " + blocks[-1]).strip() if len(blocks) > 1 else ""
+
+
+def save_review(base_url: str, api_key: str, model: str, messages: list, heading: str) -> None:
+    """让模型总结本次训练并追加到 practice-log.md。"""
+    print("\n正在生成本次复盘并写入日志…\nAI：", end="")
+    request = messages + [{
+        "role": "user",
+        "content": "请输出本次训练的书面复盘（用于存档，不要寒暄）："
+                   "① 错题账本（【题型｜错误原因】逐条列出，无则写「本次无错题」）"
+                   "② 错误模式归纳（最多 3 条）③ 给下次训练的一句话建议。",
+    }]
+    review = stream_chat(base_url, api_key, model, request)
+    if not review.strip():
+        print("（复盘生成失败，本次不写入日志）")
+        return
+    import datetime
+
+    stamp = datetime.date.today().isoformat()
+    with log_path().open("a", encoding="utf-8") as handle:
+        handle.write(f"\n## {stamp}｜{heading}\n\n{review.strip()}\n")
+    print(f"已写入 {LOG_NAME}，下次启动会自动带上这些弱点。")
 
 # ---------------------------------------------------------------------------
 # 从 docs 里的 ai-toolkit.md 解析提示词库（文档即数据，永不失同步）
@@ -97,6 +140,13 @@ def build_profile(exam_name: str, template: str) -> str:
     )
     if template:
         profile += "\n（档案格式参考，可在对话中随时补充：）\n" + template
+    last_review = load_last_review()
+    if last_review:
+        profile += (
+            "\n【上次训练遗留】以下是考生上次的复盘记录，本次出题请优先复现这些弱点，"
+            "检验是否已改掉：\n" + last_review
+        )
+        print("（已加载上次训练的遗留弱点，本次会优先检验）")
     return profile
 
 
@@ -153,7 +203,14 @@ def stream_chat(base_url: str, api_key: str, model: str, messages: list) -> str:
 # ---------------------------------------------------------------------------
 
 
-def choose_mode(modes) -> tuple:
+def choose_mode(modes, preset: int = None) -> tuple:
+    if preset is not None:
+        if preset == 0:
+            return (0, "自由对话", "")
+        for mode in modes:
+            if mode[0] == preset:
+                return mode
+        print(f"未找到 {preset} 号模式，进入菜单选择。")
     print("\n可选训练模式：")
     for number, heading, _ in modes:
         print(f"  {number:>2}. {heading}")
@@ -264,6 +321,8 @@ def main() -> None:
     parser.add_argument("--base-url", help="自定义 OpenAI 兼容接口地址")
     parser.add_argument("--model", help="自定义模型名")
     parser.add_argument("--api-key", help=f"不推荐明文传入，优先用环境变量 {ENV_KEY}")
+    parser.add_argument("--mode", type=int, help="直接进入指定编号的训练模式，跳过菜单（0=自由对话）")
+    parser.add_argument("--no-log", action="store_true", help="退出时不写练习日志")
     parser.add_argument("--list", action="store_true", help="仅列出训练模式后退出")
     # ---- grade 模式：载入题库某题 + 你的答案，交给 AI 按评分维度批改 ----
     parser.add_argument("--grade-skill", choices=["writing", "speaking"],
@@ -301,7 +360,7 @@ def main() -> None:
     print("命令：/paste 粘贴多行  /new 重开对话  /mode 换模式  /exit 退出  输入「复盘」看错题账本")
 
     system_prompt = build_profile(exam_name, profile_template)
-    number, heading, mode_prompt = choose_mode(modes)
+    number, heading, mode_prompt = choose_mode(modes, args.mode)
     messages = [{"role": "system", "content": system_prompt}]
     if mode_prompt:
         print(f"\n已加载模式：{heading}（提示词中的 {{占位符}} 请在对话里补充具体内容）")
@@ -309,16 +368,29 @@ def main() -> None:
         messages.append({"role": "user", "content": mode_prompt})
         messages.append({"role": "assistant", "content": stream_chat(base_url, api_key, model, messages)})
 
+    def finish() -> None:
+        """退出前按需写练习日志（只在真正练过才问）。"""
+        practiced = sum(1 for msg in messages if msg["role"] == "user") >= 2
+        if practiced and not args.no_log:
+            try:
+                answer = input(f"把本次复盘写入 {LOG_NAME}？(Y/n) ").strip().lower()
+            except (EOFError, KeyboardInterrupt):
+                answer = "n"
+            if answer in ("", "y", "yes"):
+                save_review(base_url, api_key, model, messages, heading)
+        print("再见，记得复盘！")
+
     while True:
         try:
             user_input = input("\n你：").strip()
         except (EOFError, KeyboardInterrupt):
-            print("\n再见，记得复盘！")
+            print()
+            finish()
             break
         if not user_input:
             continue
         if user_input == "/exit":
-            print("再见，记得复盘！")
+            finish()
             break
         if user_input == "/new":
             messages = messages[:1]
