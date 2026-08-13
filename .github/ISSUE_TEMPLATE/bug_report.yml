@@ -1,0 +1,43 @@
+name: "🐛 Bug 报告"
+description: 练习台 / 页面 / 脚本的故障反馈
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        谢谢反馈！填得越全，修复越快。
+  - type: textarea
+    id: what
+    attributes:
+      label: 现象
+      description: 实际发生了什么？
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现步骤
+      description: 怎么操作能稳定触发？
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: 出问题的位置
+      options:
+        - 在线练习台 practice.html
+        - 本地 ai_coach.py
+        - 文档 docs/
+        - 其他
+    validations:
+      required: true
+  - type: textarea
+    id: env
+    attributes:
+      label: 环境
+      description: 浏览器 / 系统 / Python 版本等
+  - type: textarea
+    id: extra
+    attributes:
+      label: 截图 / 补充信息

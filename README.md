@@ -4,12 +4,20 @@
 
 **第一个针对 2026 新版托福（TOEFL iBT）的体系化开源备考指南**
 
+[English](README_EN.md) · 中文
+
 不是资料堆砌，而是一条从 0 到目标分的完整路线：
 **认知考试 → 制定计划 → 分项突破 → AI 陪练 → 考场实战**
 
+[![🚀 立即开始 Start](https://img.shields.io/badge/%F0%9F%9A%80%20立即开始%20Start-EF476F?style=for-the-badge)](https://wonderfulclaire.github.io/awesome-toefl/practice.html)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Version](https://img.shields.io/badge/version-v1.0.0-blue)](CHANGELOG.md)
+[![Updated](https://img.shields.io/badge/updated-2026--08--13-brightgreen)](CHANGELOG.md)
+[![Stars](https://img.shields.io/github/stars/WonderfulClaire/awesome-toefl?style=social)](https://github.com/WonderfulClaire/awesome-toefl/stargazers)
 [![新版托福](https://img.shields.io/badge/TOEFL-2026%20新版-blue.svg)](docs/01-getting-started/new-toefl-2026.md)
+
+**🔗 [在线练习台（无需 API Key 即可刷题）](https://wonderfulclaire.github.io/awesome-toefl/practice.html)**
 
 </div>
 
@@ -52,7 +60,7 @@
 | [📕 阅读](docs/03-reading/reading-guide.md) | 自适应机制下的答题策略、3 类新题型攻略、长难句训练 |
 | [🎧 听力](docs/04-listening/listening-guide.md) | 4 类新题型攻略、精听法（听写/跟读/复述）、笔记法 |
 | [🎤 口语](docs/05-speaking/speaking-guide.md) | Listen & Repeat 复述训练法、Interview 应答框架与万能素材 |
-| [✍️ 写作](docs/06-writing/writing-guide.md) | Build a Sentence 语法专项、邮件写作模板、学术讨论高分框架 |
+| [✍️ 写作](docs/06-writing/writing-guide.md) | Build a Sentence 语法专项、邮件写作模板、学术讨论高分框架、11 篇高分范文 |
 
 ### 第三部分 · 工具与实战
 
@@ -74,23 +82,23 @@
   - 🎤 [口语 · 访谈（14 题）](bank/speaking/interview.md) ｜ [口语 · 听后复述句库](bank/speaking/repeat-sentences.md)
   - 📖 [阅读（3 篇 · 各 5 题）](bank/reading/) ｜ 🎧 [听力（3 篇 · 各 4 题）](bank/listening/)
   - 💎 [高分语料库（写作/口语/衔接）](bank/_phrases/phrases.md)
-- 🤖 **终端一键批改**：练完写作/口语，把答案存成 `.txt`，用现有 `ai_coach.py` 直接批改——
-  ```bash
-  python tools/ai_coach.py --grade-skill writing --grade-kind academic \
-      --grade-id A-D01 --answer my_answer.txt
-  ```
-  （`--grade-kind` 写作填 `email`/`academic`，口语填 `interview`；无需手动拼提示词。）
+- 📝 **[高分范文库](bank/writing/samples/)** —— 11 篇真题风格范文（综合写作 5 + 学术讨论 6），每篇配题目 + 英文范文 + 中文逐段解析，直接对标上面的练习题库。
+- 🧠 **[AWL 学术词汇训练营](tools/vocab/vocab.html)** —— 570 个学术高频词，间隔重复 + 自测，进度存本机。
+- ✍️ **[写作交互引擎](tools/writing-interactive.html)** —— 浏览器内拆解范文结构、对照模板练笔。
 
-> 阅读/听力题为 **ETS 风格练习文本，非官方真题**，仅供方法训练；听力文字稿请配合官方或免费音频使用（见[资源页](docs/08-resources/resources.md)）。
+> 💡 **无需 API Key 即可使用**：抽题 / 限时 / 即点即判 / 进度保存全部离线可用；只有点「AI 批改」时才需要填入你自己的 API Key（与 `coach.html` 共用配置）。没有 Key 也能完整刷题。
+
+> 阅读/听力题为 **ETS 风格练习文本，非官方真题**，仅供方法训练；听力文字稿请配合官方或免费音频使用（见[资源页](docs/08-resources/resources.md)）。写作范文为真题风格示例，非 ETS 官方发布。
 
 ---
 
 ## 🚀 快速开始（3 分钟版）
 
-1. **先读** [2026 新版托福完全解读](docs/01-getting-started/new-toefl-2026.md)，5 分钟搞清楚你要考的是什么；
-2. **做一次** [官方免费模考](docs/08-resources/resources.md#官方资源) 摸清基础分；
-3. **对照** [备考计划](docs/01-getting-started/study-plans.md) 选一套适合你的方案，开始执行；
-4. **每天用** [AI 提示词](docs/07-ai-prep/ai-toolkit.md) 做批改和陪练，替代昂贵的一对一。
+1. **先去练一练** 👉 [在线练习台](https://wonderfulclaire.github.io/awesome-toefl/practice.html) —— 不用装任何东西，打开就能刷一套；
+2. **再读** [2026 新版托福完全解读](docs/01-getting-started/new-toefl-2026.md)，5 分钟搞清楚你要考的是什么；
+3. **做一次** [官方免费模考](docs/08-resources/resources.md#官方资源) 摸清基础分；
+4. **对照** [备考计划](docs/01-getting-started/study-plans.md) 选一套适合你的方案，开始执行；
+5. **每天用** [AI 提示词](docs/07-ai-prep/ai-toolkit.md) 做批改和陪练，替代昂贵的一对一。
 
 ---
 
@@ -104,8 +112,8 @@
 
 ## 🤝 贡献
 
-欢迎分享你的备考经验、勘误、新资源！请阅读 [贡献指南](CONTRIBUTING.md)。
-高质量的考情回忆（尤其是新版考试的真实考场体验）是目前最需要的贡献。
+欢迎分享你的备考经验、勘误、新资源、新题目！请阅读 [贡献指南](CONTRIBUTING.md) 与[题库格式说明](bank/FORMAT.md)。
+高质量的考情回忆（尤其是新版考试的真实考场体验）和**新题投稿**是目前最需要的贡献。
 
 ## 📄 许可
 

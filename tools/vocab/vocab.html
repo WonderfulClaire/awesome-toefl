@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>托福学术词汇 · AWL 570 训练营</title>
+<script src="https://cdn.jsdelivr.net/gh/WonderfulClaire/claire-learning-hub@main/nav.js" defer></script>
+<style>
+:root{
+  --bg:#0e1320; --bg2:#151c2e; --card:#1b2336; --card2:#222c44;
+  --line:#2c3754; --txt:#e7ecf6; --muted:#93a0bf; --accent:#5b8cff;
+  --accent2:#37d6a6; --warn:#ffb454; --bad:#ff6b81; --good:#37d6a6;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:linear-gradient(180deg,#0e1320,#0b0f1a);color:var(--txt);line-height:1.6}
+.wrap{max-width:1080px;margin:0 auto;padding:18px 18px 60px}
+header.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+header.top h1{font-size:20px;margin:0;font-weight:700}
+header.top .tag{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:2px 9px;border-radius:20px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 18px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.tab{padding:7px 13px;border-radius:10px;cursor:pointer;font-size:14px;color:var(--muted);border:1px solid transparent;user-select:none}
+.tab:hover{color:var(--txt);background:var(--card)}
+.tab.active{color:#fff;background:var(--accent);border-color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+.card h2{margin:0 0 12px;font-size:16px}
+.card h3{margin:14px 0 8px;font-size:14px;color:var(--accent2)}
+.muted{color:var(--muted);font-size:13px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{background:var(--accent);color:#fff;border:none;padding:9px 16px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600}
+.btn.sec{background:var(--card2);color:var(--txt);border:1px solid var(--line)}
+.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.icon{background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:8px;cursor:pointer;font-size:14px;padding:4px 8px}
+.foot{margin-top:30px;font-size:12px;color:var(--muted);text-align:center}
+.banner{background:rgba(91,140,255,.1);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13px;margin-bottom:14px}
+a{color:var(--accent)}
+select,input[type=search]{background:var(--card2);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:14px}
+/* flashcard */
+.fc{text-align:center;padding:10px 4px}
+.fc-top{display:flex;justify-content:space-between;align-items:center;max-width:520px;margin:0 auto 8px}
+.fc .sl{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:2px 9px;border-radius:20px}
+.fc .word{font-size:42px;font-weight:900;letter-spacing:.5px;margin:6px 0}
+.fc .pos{color:var(--accent2);font-size:14px;margin-bottom:10px}
+.fc .back{max-width:560px;margin:8px auto 0;text-align:left}
+.fc .zh{font-size:20px;font-weight:700}
+.fc .en{color:var(--muted);font-size:14px;margin:4px 0 10px}
+.fc .ex{background:var(--bg2);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:10px 12px;font-size:14px;font-style:italic}
+.fc .forms{margin-top:10px;font-size:13px;color:var(--warn)}
+.fc .forms b{color:var(--warn)}
+.grade{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.g{padding:11px 18px;border-radius:12px;cursor:pointer;font-size:15px;font-weight:700;border:1px solid var(--line);color:#fff}
+.g.no{background:var(--bad)} .g.fuzzy{background:var(--warn);color:#22130a} .g.yes{background:var(--good);color:#06241b}
+.progressline{height:6px;background:var(--card2);border-radius:6px;overflow:hidden;margin:10px 0}
+.progressline i{display:block;height:100%;background:var(--accent)}
+/* quiz */
+.q-word{font-size:34px;font-weight:900;text-align:center;margin:6px 0}
+.q-opt{display:block;width:100%;text-align:left;background:var(--card2);border:1px solid var(--line);color:var(--txt);
+  border-radius:10px;padding:12px 14px;margin:8px 0;cursor:pointer;font-size:15px}
+.q-opt.ok{background:rgba(55,214,166,.18);border-color:var(--good)}
+.q-opt.bad{background:rgba(255,107,129,.18);border-color:var(--bad)}
+.q-opt:disabled{cursor:default}
+/* stats */
+.statgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:760px){.statgrid{grid-template-columns:1fr 1fr}}
+.stat{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.stat .n{font-size:30px;font-weight:900}
+.stat .l{font-size:12px;color:var(--muted)}
+.boxbar{display:flex;height:22px;border-radius:8px;overflow:hidden;margin:8px 0;border:1px solid var(--line)}
+.boxbar span{display:flex;align-items:center;justify-content:center;font-size:11px;color:#06121f;font-weight:700}
+.subbar{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:13px}
+.subbar .name{width:84px;color:var(--muted)}
+.subbar .track{flex:1;height:10px;background:var(--card2);border-radius:6px;overflow:hidden}
+.subbar .track i{display:block;height:100%;background:var(--accent2)}
+.subbar .v{width:54px;text-align:right;color:var(--muted)}
+/* bank grid */
+.bankgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+@media(max-width:760px){.bankgrid{grid-template-columns:repeat(2,1fr)}}
+.bank{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;text-align:center}
+.bank:hover{border-color:var(--accent)}
+.bank .b{font-size:22px;font-weight:900;color:var(--accent2)}
+.bank .t{font-size:12px;color:var(--muted)}
+/* weak list */
+.wlist{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:14px;cursor:pointer}
+.chip:hover{border-color:var(--bad);color:var(--bad)}
+.note{font-size:13px;color:var(--muted);background:var(--bg2);border-left:3px solid var(--accent);padding:10px 12px;border-radius:0 8px 8px 0;margin:8px 0}
+.center{text-align:center}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>📚 托福学术词汇 · AWL 570 训练营</h1>
+    <span class="tag">主动回忆 · 间隔重复 · 上下文</span>
+    <span class="tag" id="streakTag">🔥 连续 0 天</span>
+    <span class="tag"><a href="interactive.html">← 写作引擎</a></span>
+  </header>
+
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-tab="study">🎯 学习</div>
+    <div class="tab" data-tab="test">🧠 自测</div>
+    <div class="tab" data-tab="bank">🗂 词库</div>
+    <div class="tab" data-tab="progress">📊 进度</div>
+    <div class="tab" data-tab="weak">⚠️ 错词本</div>
+  </div>
+
+  <div id="view"></div>
+
+  <div class="foot">
+    数据：Academic Word List (AWL, Coxhead 2000) · 570 学术词族，覆盖约 10% 学术文本词频 ·
+    进度仅保存在本机浏览器（localStorage），不联网、不上传 ·
+    <a href="https://github.com/WonderfulClaire/toefl-learn">仓库</a>
+  </div>
+</div>
+
+<script src="vocab-data.js"></script>
+<script src="vocab-engine.js"></script>
+<script>
+(function(){
+  "use strict";
+  var A = (typeof AWL !== 'undefined') ? AWL : [];
+  var E = (typeof VocabEngine !== 'undefined') ? VocabEngine : null;
+  var IDS = A.map(function(_,i){ return String(i); });
+  var STORE='toefl_awl_v1', DAYS='toefl_awl_days';
+
+  function $(s){ return document.querySelector(s); }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  function load(key,def){ try{ var v=localStorage.getItem(key); return v?JSON.parse(v):def; }catch(e){ return def; } }
+  function save(key,v){ try{ localStorage.setItem(key, JSON.stringify(v)); }catch(e){} }
+  var state = load(STORE, {});          // id -> {box,due,updated,seen,correct,wrong}
+  var days = load(DAYS, []);            // ['YYYY-MM-DD', ...]
+
+  function recordDay(){
+    var d=new Date(), k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    if(days.indexOf(k)<0){ days.push(k); save(DAYS,days); }
+  }
+  function speak(text, rate){
+    try{
+      if(!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      var u=new SpeechSynthesisUtterance(text);
+      u.lang='en-US'; u.rate=rate||0.92;
+      window.speechSynthesis.speak(u);
+    }catch(e){}
+  }
+
+  var view = $('#view');
+  function setTab(name){
+    document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('active', t.dataset.tab===name); });
+    ({study:renderStudy, test:renderTest, bank:renderBank, progress:renderProgress, weak:renderWeak}[name])();
+    refreshStreak();
+  }
+  document.querySelectorAll('.tab').forEach(function(t){
+    t.addEventListener('click', function(){ setTab(t.dataset.tab); });
+  });
+  function refreshStreak(){
+    var s = E ? E.streak(days) : 0;
+    $('#streakTag').textContent = '🔥 连续 '+s+' 天';
+  }
+
+  /* ============================ 学习（核心背单词） ============================ */
+  var studySource = { mode:'due', sublist:1 }; // due | sublist | weak | all
+  var queue = [], qIdx = 0, sessSeen = 0, sessOk = 0;
+
+  function buildQueue(){
+    var ids = IDS;
+    if(studySource.mode==='sublist') ids = IDS.filter(function(id){ return A[+id].sl===studySource.sublist; });
+    else if(studySource.mode==='weak') ids = IDS.filter(function(id){ var c=state[id]; return c && c.seen && c.box<=1; });
+    else if(studySource.mode==='all') ids = IDS;
+    // due 模式：仅到期（pickSession 默认到期优先，无到期则给新词）
+    queue = E.pickSession(state, ids, { allowNew: studySource.mode!=='weak' });
+    qIdx = 0; sessSeen = 0; sessOk = 0;
+  }
+
+  function renderStudy(){
+    if(!A.length){ view.innerHTML='<div class="card"><h2>⚠️ 词库未加载</h2><div class="note">vocab-data.js 未找到，请确认与 vocab.html 在同一目录。</div></div>'; return; }
+    var st = E.stats(state, IDS);
+    var opt = '<option value="due"'+(studySource.mode==='due'?' selected':'')+'>🔁 今日待复习 ('+st.due+')</option>'
+            + '<option value="all"'+(studySource.mode==='all'?' selected':'')+'>🌱 全部词（含新词）</option>'
+            + '<option value="weak"'+(studySource.mode==='weak'?' selected':'')+'>⚠️ 仅薄弱词 ('+st.weak+')</option>';
+    for(var s=1;s<=10;s++) opt += '<option value="sl'+s+'"'+(studySource.mode==='sublist'&&studySource.sublist===s?' selected':'')+'>Sublist '+s+'</option>';
+    view.innerHTML =
+      '<div class="card"><h2>🎯 学习模式</h2>'
+      + '<div class="row"><span class="muted">词单来源</span>'
+      + '<select id="srcSel" onchange="onSourceChange(this.value)">'+opt+'</select>'
+      + '<button class="btn" onclick="startStudy()">▶ 开始 / 继续</button></div>'
+      + '<div class="note">主动回忆法：先看英文词 → 在脑中回忆意思 → 点「显示释义」核对 → 按掌握程度打分。系统用 Leitner 5 盒间隔重复自动安排复习。</div>'
+      + '</div>'
+      + '<div id="studyArea"></div>';
+    startStudy();
+  }
+  window.onSourceChange = function(v){
+    if(v==='due') studySource={mode:'due'};
+    else if(v==='all') studySource={mode:'all'};
+    else if(v==='weak') studySource={mode:'weak'};
+    else if(v.indexOf('sl')===0) studySource={mode:'sublist', sublist:+v.slice(2)};
+  };
+  window.startStudy = function(){
+    buildQueue();
+    if(!queue.length){ $('#studyArea').innerHTML='<div class="card center">🎉 这个来源暂时没有可复习的词。</div>'; return; }
+    qIdx=0; sessSeen=0; sessOk=0; renderCard();
+  };
+  function renderCard(){
+    var id = queue[qIdx]; var it = A[+id];
+    var area = $('#studyArea');
+    area.innerHTML =
+      '<div class="card"><div class="fc">'
+      + '<div class="fc-top"><span class="sl">Sublist '+it.sl+' · 第 '+(qIdx+1)+'/'+queue.length+' 张</span>'
+      + '<button class="icon" onclick="speak(\''+esc(it.w)+'\')" title="发音">🔊</button></div>'
+      + '<div class="word">'+esc(it.w)+'</div>'
+      + '<div class="pos">'+esc(it.pos)+'</div>'
+      + '<div id="back" class="back hidden">'
+      +   '<div class="zh">'+esc(it.zh)+'</div>'
+      +   '<div class="en">'+esc(it.en)+'</div>'
+      +   '<div class="ex">“'+esc(it.ex)+'” <button class="icon" onclick="speak(\''+esc(it.ex)+'\')">🔊</button></div>'
+      +   (it.forms ? '<div class="forms">词族：<b>'+esc(it.forms)+'</b></div>' : '<div class="forms muted">词族：无派生词族（功能词）</div>')
+      + '</div>'
+      + '<div id="reveal" class="row" style="justify-content:center;margin-top:16px">'
+      +   '<button class="btn" onclick="reveal()">显示释义</button></div>'
+      + '<div id="grade" class="grade hidden">'
+      +   '<button class="g no" onclick="grade(\'no\')">😵 不认识</button>'
+      +   '<button class="g fuzzy" onclick="grade(\'fuzzy\')">🤔 模糊</button>'
+      +   '<button class="g yes" onclick="grade(\'yes\')">😎 认识</button>'
+      + '</div>'
+      + '</div></div>';
+  }
+  window.reveal = function(){
+    $('#back').classList.remove('hidden');
+    $('#reveal').classList.add('hidden');
+    $('#grade').classList.remove('hidden');
+  };
+  window.grade = function(q){
+    var id = queue[qIdx];
+    var prev = state[id] ? state[id].box : 0;
+    var box = q==='no' ? 0 : (q==='fuzzy' ? Math.max(1, Math.min(prev,1)) : Math.min(4, prev+1));
+    var interval = E.INTERVALS[box]*86400000;
+    state[id] = {
+      box:box, due:Date.now()+interval, updated:Date.now(),
+      seen:(state[id]?state[id].seen:0)+1,
+      correct:(state[id]?state[id].correct:0)+(q==='yes'?1:0),
+      wrong:(state[id]?state[id].wrong:0)+(q==='no'?1:0)
+    };
+    save(STORE, state); recordDay();
+    sessSeen++; if(q==='yes') sessOk++;
+    qIdx++;
+    if(qIdx>=queue.length) renderStudyDone(); else renderCard();
+  };
+  function renderStudyDone(){
+    var pct = sessSeen? Math.round(sessOk/sessSeen*100):0;
+    $('#studyArea').innerHTML =
+      '<div class="card center"><h2>🎉 本轮完成！</h2>'
+      + '<div class="statgrid" style="max-width:420px;margin:14px auto">'
+      + '<div class="stat"><div class="n">'+sessSeen+'</div><div class="l">已学张</div></div>'
+      + '<div class="stat"><div class="n">'+sessOk+'</div><div class="l">认识</div></div>'
+      + '<div class="stat"><div class="n">'+(sessSeen-sessOk)+'</div><div class="l">待巩固</div></div>'
+      + '<div class="stat"><div class="n">'+pct+'%</div><div class="l">本轮掌握</div></div></div>'
+      + '<div class="row" style="justify-content:center">'
+      + '<button class="btn" onclick="startStudy()">再来一轮</button>'
+      + '<button class="btn sec" onclick="setTab(\'progress\')">看进度</button></div></div>';
+  }
+
+  /* ============================ 自测（选择题，强主动回忆） ============================ */
+  var quiz = [], qi = 0, qCorrect = 0, qAnswered = 0;
+  function renderTest(){
+    if(!A.length){ view.innerHTML='<div class="card"><h2>⚠️ 词库未加载</h2></div>'; return; }
+    var st = E.stats(state, IDS);
+    view.innerHTML =
+      '<div class="card"><h2>🧠 自测模式</h2>'
+      + '<div class="note">四选一中文释义。做错的词会自动被打回「薄弱词」，进入错词本重点复习。这是比单纯看卡更强的主动回忆。</div>'
+      + '<div class="row"><span class="muted">题量</span>'
+      + '<select id="qnum"><option value="10">10 题</option><option value="20">20 题</option><option value="30">30 题</option></select>'
+      + '<span class="muted">范围</span>'
+      + '<select id="qsrc"><option value="due">优先待复习</option><option value="all">全部</option><option value="weak">仅薄弱词</option></select>'
+      + '<button class="btn" onclick="startTest()">开始自测</button></div></div>'
+      + '<div id="testArea"></div>';
+  }
+  window.startTest = function(){
+    var n = +$('#qnum').value, src = $('#qsrc').value;
+    var pool = IDS;
+    if(src==='weak') pool = IDS.filter(function(id){ var c=state[id]; return c&&c.seen&&c.box<=1; });
+    else if(src==='due'){ var dueIds=IDS.filter(function(id){ return E.isDue(state[id], Date.now()); }); if(dueIds.length) pool=dueIds; }
+    pool = pool.slice();
+    // 随机抽 n 个词
+    for(var i=pool.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=pool[i];pool[i]=pool[j];pool[j]=t; }
+    var picks = pool.slice(0, Math.min(n, pool.length));
+    quiz = picks.map(function(id){
+      var it = A[+id];
+      var q = E.makeQuiz(it, A, 4);
+      q.id = id; return q;
+    });
+    qi=0; qCorrect=0; qAnswered=0; renderQuiz();
+  };
+  function renderQuiz(){
+    if(qi>=quiz.length){ renderTestDone(); return; }
+    var q = quiz[qi];
+    var opts = q.options.map(function(o,i){
+      return '<button class="q-opt" id="o'+i+'" onclick="answer('+i+')">'+esc(o)+'</button>';
+    }).join('');
+    $('#testArea').innerHTML =
+      '<div class="card"><div class="row" style="justify-content:space-between">'
+      + '<span class="muted">第 '+(qi+1)+' / '+quiz.length+' 题</span>'
+      + '<button class="icon" onclick="speak(\''+esc(q.word)+'\')">🔊</button></div>'
+      + '<div class="q-word">'+esc(q.word)+'</div>'
+      + '<div class="muted center">选出正确的中文释义</div>'+opts+'</div>';
+  }
+  window.answer = function(i){
+    var q = quiz[qi];
+    var btns = document.querySelectorAll('.q-opt');
+    btns.forEach(function(b){ b.disabled=true; });
+    var chosen = btns[i];
+    if(i===q.correctIndex){ chosen.classList.add('ok'); qCorrect++; }
+    else { chosen.classList.add('bad'); btns[q.correctIndex].classList.add('ok'); }
+    qAnswered++;
+    recordDay();
+    if(i!==q.correctIndex){
+      // 打回薄弱：box 0
+      state[q.id] = state[q.id]||{box:0,due:0,updated:0,seen:0,correct:0,wrong:0};
+      state[q.id].box=0; state[q.id].due=Date.now(); state[q.id].seen=(state[q.id].seen||0)+1; state[q.id].wrong=(state[q.id].wrong||0)+1;
+      save(STORE, state);
+    }
+    var note = (i===q.correctIndex?'✅ 答对':'❌ 正确释义：'+esc(q.correct));
+    var fb = document.createElement('div'); fb.className='note'; fb.textContent=note;
+    $('#testArea .card').appendChild(fb);
+    qi++;
+    setTimeout(renderQuiz, 850);
+  };
+  function renderTestDone(){
+    var pct = quiz.length? Math.round(qCorrect/quiz.length*100):0;
+    var grade = pct>=90?'🏆 优秀':pct>=70?'👍 良好':pct>=50?'📈 及格':'💪 继续加油';
+    $('#testArea').innerHTML =
+      '<div class="card center"><h2>'+grade+'</h2>'
+      + '<div class="statgrid" style="max-width:420px;margin:14px auto">'
+      + '<div class="stat"><div class="n">'+quiz.length+'</div><div class="l">总题数</div></div>'
+      + '<div class="stat"><div class="n">'+qCorrect+'</div><div class="l">答对</div></div>'
+      + '<div class="stat"><div class="n">'+(quiz.length-qCorrect)+'</div><div class="l">答错</div></div>'
+      + '<div class="stat"><div class="n">'+pct+'%</div><div class="l">正确率</div></div></div>'
+      + '<div class="row" style="justify-content:center">'
+      + '<button class="btn" onclick="startTest()">再来一次</button>'
+      + '<button class="btn sec" onclick="setTab(\'weak\')">复习错词</button></div></div>';
+  }
+
+  /* ============================ 词库（按 sublist） ============================ */
+  function renderBank(){
+    if(!A.length){ view.innerHTML='<div class="card"><h2>⚠️ 词库未加载</h2></div>'; return; }
+    var counts={}; for(var s=1;s<=10;s++) counts[s]=0;
+    A.forEach(function(it){ counts[it.sl]++; });
+    var cards='';
+    for(var s=1;s<=10;s++){
+      cards += '<div class="bank" onclick="studySublist('+s+')"><div class="b">'+counts[s]+'</div><div class="t">Sublist '+s+'</div></div>';
+    }
+    var learned = E.stats(state, IDS).seen;
+    view.innerHTML =
+      '<div class="card"><h2>🗂 按频率分册学习</h2>'
+      + '<div class="note">AWL 按词频分 10 个 sublist，Sublist 1 最高频（托福阅读/写作最常出现）。建议从 Sublist 1 开始，先拿下最高频核心词。</div>'
+      + '<div class="bankgrid">'+cards+'</div></div>'
+      + '<div class="card"><h2>🔎 单词语 search</h2>'
+      + '<div class="row"><input type="search" id="searchBox" placeholder="输入英文或中文检索…" style="flex:1" oninput="doSearch(this.value)">'
+      + '</div><div id="searchRes" class="wlist" style="margin-top:10px"></div></div>';
+  }
+  window.studySublist = function(s){ studySource={mode:'sublist', sublist:s}; setTab('study'); };
+  window.doSearch = function(q){
+    q=(q||'').trim().toLowerCase(); var box=$('#searchRes');
+    if(!q){ box.innerHTML=''; return; }
+    var hit = A.map(function(it,i){return {it:it,i:i};}).filter(function(o){
+      return o.it.w.toLowerCase().indexOf(q)>=0 || o.it.zh.indexOf(q)>=0 || o.it.forms.toLowerCase().indexOf(q)>=0;
+    }).slice(0,30);
+    box.innerHTML = hit.map(function(o){
+      return '<span class="chip" onclick="quickView('+o.i+')">'+esc(o.it.w)+' · '+esc(o.it.zh)+'</span>';
+    }).join('') || '<span class="muted">无匹配</span>';
+  };
+  window.quickView = function(i){
+    var it=A[i];
+    alert(it.w+' ['+it.pos+']\n'+it.zh+'\n'+it.en+'\n例句：'+it.ex+'\n词族：'+it.forms);
+    speak(it.w);
+  };
+
+  /* ============================ 进度 ============================ */
+  function renderProgress(){
+    if(!A.length){ view.innerHTML='<div class="card"><h2>⚠️ 词库未加载</h2></div>'; return; }
+    var st = E.stats(state, IDS);
+    var learnedPct = st.total? Math.round(st.seen/st.total*100):0;
+    var duePct = st.total? Math.round(st.due/st.total*100):0;
+    var boxes = st.boxCounts;
+    var boxColors=['#ff6b81','#ffb454','#ffe08a','#9be7c4','#37d6a6'];
+    var boxLabels=['盒0 新/重来','盒1','盒2','盒3','盒4 掌握'];
+    var boxbar = boxes.map(function(c,i){
+      var w = st.seen? Math.round(c/st.seen*100):0;
+      return '<span style="width:'+w+'%;background:'+boxColors[i]+'" title="'+boxLabels[i]+': '+c+'">'+ (w>=8? c : '') +'</span>';
+    }).join('');
+    // per-sublist progress
+    var counts={}; for(var s=1;s<=10;s++) counts[s]=0; A.forEach(function(it){counts[it.sl]++;});
+    var slbars='';
+    for(var s=1;s<=10;s++){
+      var learned = IDS.filter(function(id){ return A[+id].sl===s && state[id] && state[id].seen; }).length;
+      var p = counts[s]? Math.round(learned/counts[s]*100):0;
+      slbars += '<div class="subbar"><span class="name">Sublist '+s+'</span>'
+        + '<span class="track"><i style="width:'+p+'%"></i></span><span class="v">'+learned+'/'+counts[s]+'</span></div>';
+    }
+    view.innerHTML =
+      '<div class="card"><h2>📊 学习总览</h2>'
+      + '<div class="statgrid">'
+      + '<div class="stat"><div class="n" style="color:var(--accent)">'+st.seen+'</div><div class="l">已学 / '+st.total+'</div></div>'
+      + '<div class="stat"><div class="n" style="color:var(--warn)">'+st.due+'</div><div class="l">今日待复习</div></div>'
+      + '<div class="stat"><div class="n" style="color:var(--good)">'+st.mastered+'</div><div class="l">已掌握(盒4)</div></div>'
+      + '<div class="stat"><div class="n" style="color:var(--bad)">'+st.weak+'</div><div class="l">薄弱词(盒0-1)</div></div>'
+      + '</div>'
+      + '<div class="progressline"><i style="width:'+learnedPct+'%"></i></div>'
+      + '<div class="muted center">总体进度 '+learnedPct+'% · 待复习占比 '+duePct+'%</div></div>'
+      + '<div class="card"><h2>📦 Leitner 盒子分布</h2>'
+      + '<div class="boxbar">'+boxbar+'</div>'
+      + '<div class="row" style="justify-content:space-between;font-size:11px;color:var(--muted)">'
+      + boxLabels.map(function(l,i){return '<span>'+l+': '+boxes[i]+'</span>';}).join('')+'</div></div>'
+      + '<div class="card"><h2>📚 各分册进度</h2>'+slbars+'</div>'
+      + '<div class="card center"><button class="btn ghost" onclick="resetProgress()">重置全部进度</button>'
+      + '<div class="muted" style="margin-top:6px">仅清空本机记录，词库不受影响。</div></div>';
+  }
+  window.resetProgress = function(){
+    if(confirm('确定清空本机学习进度？（不可恢复）')){
+      state={}; save(STORE,state); days=[]; save(DAYS,days);
+      setTab('progress');
+    }
+  };
+
+  /* ============================ 错词本 ============================ */
+  function renderWeak(){
+    if(!A.length){ view.innerHTML='<div class="card"><h2>⚠️ 词库未加载</h2></div>'; return; }
+    var weak = IDS.filter(function(id){ var c=state[id]; return c&&c.seen&&c.box<=1; })
+                  .map(function(id){ return A[+id]; });
+    var html = '<div class="card"><h2>⚠️ 错词本（薄弱词）</h2>';
+    if(!weak.length){
+      html += '<div class="note">🎉 暂时没有薄弱词！你当前掌握的词都在盒 2 以上。</div>';
+    } else {
+      html += '<div class="note">这些词在盒 0–1（反复记不住或刚学）。点「一键复习薄弱词」集中攻克，或在下方点单个词查看。</div>'
+        + '<div class="row" style="margin-bottom:12px"><button class="btn" onclick="studyWeak()">⚡ 一键复习薄弱词 ('+weak.length+')</button></div>'
+        + '<div class="wlist">'+ weak.map(function(it){ return '<span class="chip" onclick="quickView('+A.indexOf(it)+')">'+esc(it.w)+'</span>'; }).join('') +'</div>';
+    }
+    html += '</div>';
+    view.innerHTML = html;
+  }
+  window.studyWeak = function(){ studySource={mode:'weak'}; setTab('study'); };
+
+  // 启动
+  if(!E){ view.innerHTML='<div class="card"><h2>⚠️ 引擎未加载</h2><div class="note">vocab-engine.js 未找到。</div></div>'; }
+  else { setTab('study'); refreshStreak(); }
+})();
+</script>
+</body>
+</html>

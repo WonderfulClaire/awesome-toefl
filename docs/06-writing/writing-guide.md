@@ -131,4 +131,19 @@ Your name
 
 ---
 
+## 六、配套练习与范文资源
+
+光看方法不够，下面这些可直接练、可直接抄结构的资源都在仓库里：
+
+- 📝 **[高分范文库 `bank/writing/samples/`](bank/writing/samples/)** —— 11 篇真题风格范文（综合写作 5 + 学术讨论 6），每篇含**题目 + 英文范文 + 中文逐段解析**（结构拆解 / 亮点句型 / 可借鉴思路）。练完题库里的题，来这里对照范文找差距。
+- 🧱 **[模板骨架 `templates.md`](templates.md)** —— 综合写作 / 学术讨论两套可直接套的结构占位，战场替换 `[ ]` 即可。
+- 💎 **[高分句库 `sentence-bank.md`](sentence-bank.md)** —— 按功能分类的高分表达与句型，替换掉烂大街的 `However`。
+- 📐 **[评分量表 `scoring-rubric.md`](scoring-rubric.md)** —— 官方评分维度拆解，写之前知道「分扣在哪」，写之后对着自查。
+- 🧠 **[AWL 学术词汇训练营 `tools/vocab/vocab.html`](../../tools/vocab/vocab.html)** —— 570 个学术高频词，间隔重复 + 自测，进度存本机。
+- ✍️ **[写作交互引擎 `tools/writing-interactive.html`](../../tools/writing-interactive.html)** —— 浏览器内拆解范文结构、对照模板练笔。
+
+> 想练更多题或贡献新题？题库格式见 [`bank/FORMAT.md`](../../bank/FORMAT.md)，欢迎 PR。
+
+---
+
 ⬅️ 上一篇：[口语篇](../05-speaking/speaking-guide.md) ｜ ➡️ 下一篇：[AI 辅助备考](../07-ai-prep/ai-toolkit.md)

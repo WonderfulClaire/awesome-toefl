@@ -1,0 +1,42 @@
+name: "📝 新题投稿"
+description: 贡献一道新的练习题或高分范文
+title: "[新题] "
+labels: ["new-question"]
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: 题型
+      options:
+        - 写作 · 邮件
+        - 写作 · 学术讨论
+        - 口语 · 访谈
+        - 口语 · 听后复述
+        - 阅读
+        - 听力
+        - 范文 / 高分示例
+    validations:
+      required: true
+  - type: textarea
+    id: content
+    attributes:
+      label: 题目内容
+      description: 按 bank/FORMAT.md 的格式粘贴，可直接贴 Markdown 条目
+    validations:
+      required: true
+  - type: dropdown
+    id: source
+    attributes:
+      label: 来源
+      options:
+        - 自编
+        - 真题风格（非官方）
+        - 考后回忆
+        - 其他
+    validations:
+      required: true
+  - type: textarea
+    id: note
+    attributes:
+      label: 备注
+      description: 难度、适用人群、参考来源等

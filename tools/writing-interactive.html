@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>托福写作 · 交互式学习引擎</title>
+<script src="https://cdn.jsdelivr.net/gh/WonderfulClaire/claire-learning-hub@main/nav.js" defer></script>
+<style>
+:root{
+  --bg:#0e1320; --bg2:#151c2e; --card:#1b2336; --card2:#222c44;
+  --line:#2c3754; --txt:#e7ecf6; --muted:#93a0bf; --accent:#5b8cff;
+  --accent2:#37d6a6; --warn:#ffb454; --bad:#ff6b81; --good:#37d6a6;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:linear-gradient(180deg,#0e1320,#0b0f1a);color:var(--txt);line-height:1.6}
+.wrap{max-width:1080px;margin:0 auto;padding:18px 18px 60px}
+header.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+header.top h1{font-size:20px;margin:0;font-weight:700}
+header.top .tag{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:2px 9px;border-radius:20px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 18px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.tab{padding:7px 13px;border-radius:10px;cursor:pointer;font-size:14px;color:var(--muted);border:1px solid transparent;user-select:none}
+.tab:hover{color:var(--txt);background:var(--card)}
+.tab.active{color:#fff;background:var(--accent);border-color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+.card h2{margin:0 0 12px;font-size:16px}
+.card h3{margin:16px 0 8px;font-size:14px;color:var(--accent2)}
+.muted{color:var(--muted);font-size:13px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.btn{background:var(--accent);color:#fff;border:none;padding:9px 16px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600}
+.btn:hover{filter:brightness(1.08)}
+.btn.sec{background:var(--card2);color:var(--txt);border:1px solid var(--line)}
+.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.btn.warn{background:var(--warn);color:#1a1205}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+select,input[type=text],textarea{background:var(--bg2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:14px;font-family:inherit}
+textarea{width:100%;min-height:230px;resize:vertical;line-height:1.7}
+label.fld{display:block;font-size:13px;color:var(--muted);margin:10px 0 5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+.pill{display:inline-block;font-size:12px;padding:2px 9px;border-radius:20px;background:var(--card2);color:var(--muted);margin:2px}
+.pill.hot{background:rgba(91,140,255,.18);color:#aac4ff}
+.pill.ok{background:rgba(55,214,166,.16);color:#7af0c8}
+.stat{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center;flex:1;min-width:120px}
+.stat .n{font-size:26px;font-weight:800;color:#fff}
+.stat .l{font-size:12px;color:var(--muted);margin-top:3px}
+.bar{height:9px;background:var(--bg2);border-radius:6px;overflow:hidden;margin:4px 0 2px}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.barrow{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:13px}
+.barrow .name{width:96px;color:var(--muted)}
+.barrow .track{flex:1}
+.barrow .val{width:42px;text-align:right;color:#fff}
+/* flashcard */
+.fc{background:linear-gradient(160deg,#1c2740,#161d30);border:1px solid var(--line);border-radius:16px;padding:26px;min-height:190px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;cursor:pointer;margin:10px 0}
+.fc .cat{font-size:12px;color:var(--accent2);margin-bottom:10px;letter-spacing:.3px}
+.fc .big{font-size:20px;font-weight:700;line-height:1.5}
+.fc .sub{font-size:13px;color:var(--muted);margin-top:12px}
+.fc .hint{font-size:12px;color:var(--muted);margin-top:14px}
+.timer{font-size:30px;font-weight:800;letter-spacing:1px;font-variant-numeric:tabular-nums}
+.timer.low{color:var(--bad)}
+.crit{border:1px solid var(--line);border-radius:12px;padding:12px;margin:9px 0;background:var(--bg2)}
+.crit .ch{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.crit .ch .lbl{font-weight:700;font-size:14px}
+.crit .ch .h{font-size:12px;color:var(--muted)}
+.scale{display:flex;gap:5px;margin-top:9px;flex-wrap:wrap}
+.scale button{flex:1;min-width:34px;background:var(--card);border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:6px 0;cursor:pointer;font-size:13px}
+.scale button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.band{font-size:40px;font-weight:900}
+.band.good{color:var(--good)}.band.mid{color:var(--warn)}.band.low{color:var(--bad)}
+.note{font-size:13px;color:var(--muted);background:var(--bg2);border-left:3px solid var(--accent);padding:10px 12px;border-radius:0 8px 8px 0;margin:8px 0}
+.methodgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:760px){.methodgrid{grid-template-columns:1fr}}
+.mc{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px}
+.mc .t{font-weight:700;color:var(--accent2);font-size:14px;margin-bottom:4px}
+.reveal{display:none}
+.reveal.show{display:block}
+.modelbox{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--bg2);font-size:14px;white-space:pre-wrap}
+.principle{font-size:13px;color:var(--muted)}
+a{color:var(--accent)}
+.foot{margin-top:30px;font-size:12px;color:var(--muted);text-align:center}
+.banner{background:rgba(91,140,255,.1);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13px;margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>📝 托福写作 · 交互式学习引擎</h1>
+    <span class="tag">主动回忆 · 间隔重复 · 即时反馈</span>
+    <span class="tag" id="streakTag">🔥 连续 0 天</span>
+  </header>
+
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-tab="dash">仪表盘</div>
+    <div class="tab" data-tab="practice">限时练习</div>
+    <div class="tab" data-tab="self">自评 & 范文对比</div>
+    <div class="tab" data-tab="sentence">句库训练</div>
+    <div class="tab" data-tab="vocab">词汇训练</div>
+    <div class="tab" data-tab="progress">进度</div>
+    <div class="tab" data-tab="method">学习方法</div>
+  </div>
+
+  <div id="view"></div>
+
+  <div class="foot">
+    数据来自你的 11 篇范文 + 句库 · 进度与卡片仅保存在本机浏览器（localStorage），不联网、不上传 ·
+    <a href="https://github.com/WonderfulClaire/toefl-learn">仓库</a>
+  </div>
+</div>
+
+<script>
+window.TOEFL_DATA = {
+ "prompts": [
+  {
+   "id": "writing_academic-discussion_01-space-exploration",
+   "type": "academic",
+   "title": "政府该投资太空还是解决地球问题？",
+   "difficulty": 3,
+   "wordcount": "155",
+   "professor": "Some argue that with so many pressing problems on Earth—poverty, climate change, disease—governments should stop funding space exploration and redirect that money. Do you think public money for space is justified, or should it be spent on Earth? Why?",
+   "student": "I lean toward solving Earth problems first. We have people who can't get clean water today, so space feels like a luxury we can't afford.",
+   "model": "I'd have to disagree with Claire a bit—I think space funding *is* justified, as long as it runs alongside—not instead of—solving Earth problems.\n\nThe main reason is that space investment produces spin-off technologies we rely on daily. Take satellite imaging and weather forecasting as an example: they were born from space programs yet now help us track storms, manage crops, and even respond to climate disasters. That shows the boundary between \"space\" and \"Earth\" isn't as sharp as it seems.\n\nAdmittedly, clean water and poverty are urgent, and I'm not saying we should abandon them. But the choice isn't either-or. A small fraction of budgets on space yields tools that ultimately make Earth problems easier to tackle.\n\nUnlike Claire, who frames space as a luxury, I'd argue it's a long-term investment whose returns circle back to life on Earth.",
+   "analysis": "### 结构拆解\n- 第 1 句亮立场：礼貌反驳 Claire，主张\"双轨\"。\n- 理由 1 + 例子：卫星/气象预报的溢出效益（具体、贴科技背景）。\n- 让步：承认地球问题紧急，但强调\"非此即彼\"是伪命题。\n- 呼应同学收尾：把\"奢侈品\"重构为\"长期投资\"。\n\n### 亮点表达 / 句型\n- `I'd have to disagree with Claire a bit`（礼貌反驳同学，讨论感强）\n- `spin-off technologies`（溢出/衍生技术，科技类万能词）\n- `the choice isn't either-or`（非此即彼，加分逻辑词）\n\n### 写作思路（可借鉴点）\n1. 学术讨论**第一句就接教授问题+同学立场**，别另起炉灶。\n2. 用\"具体例子\"撑理由——卫星/气象是理工科申请者信手拈来的真例子，比空说\"technology helps\"得分高。\n3. 让步段 `Admittedly … but …` 显成熟，是 4→5 的分水岭。"
+  },
+  {
+   "id": "writing_academic-discussion_02-group-vs-solo-study",
+   "type": "academic",
+   "title": "小组学习还是独自学习好？",
+   "difficulty": 2,
+   "wordcount": "150",
+   "professor": "Research shows mixed results on study methods. Do you think students learn better by studying in groups or alone? Share your view with a concrete reason.",
+   "student": "I love group study—explaining things to friends helps me remember, and it's less boring.",
+   "model": "I'd side with Kelly that group study has real upsides, but I'd add that the best approach depends on the stage of learning.\n\nFor absorbing *new* and difficult material—say, a dense math proof—I find solo study far more effective. When I'm alone, I can pause, re-read, and sit with confusion without slowing anyone down. A good case in point is last semester: I struggled with signal-processing derivations in a group, but once I worked through them solo with the textbook, everything clicked.\n\nThat said, Kelly is right that teaching peers locks in understanding, and groups keep motivation high. So I'd argue: learn alone first to build a foundation, then meet in groups to test and explain.\n\nUnlike Kelly, who treats group study as the default, I'd stress matching the method to the task.",
+   "analysis": "### 结构拆解\n- 第 1 句：接 Kelly + 提出\"分阶段\"视角（差异化）。\n- 理由 + 个人例子：新难材料靠 solo，用信号处理推导的真实经历。\n- 让步：承认 Kelly 的\"教别人巩固\"有道理。\n- 收尾：方法要匹配任务，呼应同学并给出更细框架。\n\n### 亮点表达 / 句型\n- `depends on the stage of learning`（分阶段，显逻辑层次）\n- `sit with confusion`（忍耐困惑，地道学术表达）\n- `everything clicked`（恍然大悟，口语化但自然加分）\n\n### 写作思路（可借鉴点）\n1. 教育类常考\"二元选择\"，高分答法往往是\"看情况/分阶段\"，比死站一边更成熟。\n2. 个人例子要**具体可验证**（哪门课、什么内容），别写\"once I studied alone and it worked\"。\n3. 用 `A good case in point is …` 引出例子，比 \"for example\" 更有学术感。"
+  },
+  {
+   "id": "writing_academic-discussion_03-profit-vs-responsibility",
+   "type": "academic",
+   "title": "企业该优先利润还是社会责任？",
+   "difficulty": 3,
+   "wordcount": "155",
+   "professor": "Should a company's first duty be maximizing profit for shareholders, or should it prioritize social and environmental responsibility even at the cost of profit? Defend your position.",
+   "student": "Profit comes first—without money a company can't help anyone. Responsibility is a luxury for big firms.",
+   "model": "I'd push back on Claire's \"luxury\" framing—I believe responsibility and profit align more than they conflict, especially long term.\n\nThe core reason is that social and environmental responsibility *reduces risk* and builds trust. Take a tech firm that invests early in secure, private data handling: it may spend more upfront, but it avoids the reputational and regulatory disasters that sink careless competitors. That shows responsibility is not charity—it's defensive strategy.\n\nAdmittedly, small companies with thin margins must survive first, and I'm not arguing they should donate blindly. But even they benefit from treating workers and customers fairly, which lowers turnover and builds loyalty.\n\nUnlike Claire, who sees responsibility as a cost, I'd argue it's an investment that protects and eventually grows profit.",
+   "analysis": "### 结构拆解\n- 第 1 句：反驳 Claire 的\"奢侈品\"框架，立\"长期统一\"立场。\n- 理由 + 例子：尽责降风险（数据安全的具体场景），把责任重构为\"防御性战略\"。\n- 让步：小企业先求生，不盲捐——显周全。\n- 收尾：责任是投资而非成本，呼应同学。\n\n### 亮点表达 / 句型\n- `align more than they conflict`（比冲突更一致，精准立论）\n- `defensive strategy`（防御性战略，商业类加分词）\n- `I'd push back on … framing`（push back on sb's framing，高级反驳套话）\n\n### 写作思路（可借鉴点）\n1. 商业伦理题的高分立场常是\"辩证统一\"：不说非此即彼，而说\"长期看一致\"。\n2. 用 `Take X as an example` 举**行业具体场景**（数据安全），比泛泛\"companies should be good\"有力。\n3. `I'd push back on …'s framing` 是学术讨论里**优雅反驳同学**的金牌句型，记牢。"
+  },
+  {
+   "id": "writing_academic-discussion_04-technology-isolation",
+   "type": "academic",
+   "title": "科技让人更孤立还是更联结？",
+   "difficulty": 2,
+   "wordcount": "150",
+   "professor": "Critics say smartphones and social media isolate us, while supporters say they connect us like never before. Where do you stand, and why?",
+   "student": "I think we're more connected—I talk to friends abroad every day who I'd never meet otherwise.",
+   "model": "I'd side with Kelly that tech connects us, but I'd add that the tool is neutral; it depends on how we use it.\n\nThe reason I lean \"more connected\" is the sheer reach. A good case in point: during the pandemic, video calls let my lab group collaborate across three cities and keep our research going. That's genuine connection a generation ago couldn't have.\n\nThat said, Kelly's right to celebrate the upside, but isolation is real when screens replace face-to-face time. The fix isn't less tech—it's intentionality: using it to start conversations, not escape them.\n\nUnlike Kelly, who frames it as purely positive, I'd stress that connection or isolation is a choice we make with the same device.",
+   "analysis": "### 结构拆解\n- 第 1 句：接 Kelly + 提出\"工具中性\"的中道立场。\n- 理由 + 例子：用疫情期间跨城科研协作的真实场景证明\"真联结\"。\n- 让步：承认屏幕替代面对面会带来孤立，但解法是\"有意识使用\"而非弃用。\n- 收尾：联结或孤立是使用者的选择，呼应同学并升华。\n\n### 亮点表达 / 句型\n- `the tool is neutral`（工具中性，辩证立论核心句）\n- `sheer reach`（巨大的触达力，简洁有力）\n- `intentionality`（有意而为，高级名词）\n\n### 写作思路（可借鉴点）\n1. 科技类\"孤立 vs 联结\"是经典题，高分立场几乎都是\"中性论+看用法\"，比单边站更稳。\n2. 例子用**亲身可验证场景**（跨城科研）比\"people can chat online\"具体得多。\n3. `That said, … but …` 让步桥接，自然引出\"解法\"，避免非黑即白。"
+  },
+  {
+   "id": "writing_academic-discussion_05-experienced-vs-young",
+   "type": "academic",
+   "title": "招有经验的人还是培养新人？",
+   "difficulty": 3,
+   "wordcount": "155",
+   "professor": "When building a team, is it better to hire experienced workers at higher cost, or to hire young, trainable people at lower cost? What would you advise a new manager?",
+   "student": "Always experienced—they hit the ground running and you don't waste time training.",
+   "model": "I'd push back on Claire a little—I'd advise a *mixed* roster rather than experienced-only.\n\nThe reason is that the two groups cover different needs. Experienced hires, as Claire says, deliver immediately and stabilize tough projects. But a good case in point from my lab: when we brought in two junior students and trained them on our signal-processing pipeline, they grew into exactly the roles we needed—at a fraction of the cost, and with deeper loyalty to the team.\n\nAdmittedly, a new manager under deadline pressure should lean experienced to avoid risk. Still, an all-veteran team gets expensive and can resist fresh methods.\n\nUnlike Claire, who defaults to seniority, I'd stress balancing both: seniors for stability, juniors for growth and renewal.",
+   "analysis": "### 结构拆解\n- 第 1 句：礼貌反驳 Claire，主张\"混合梯队\"。\n- 理由 + 例子：两类人互补；用实验室培养新人的真实经历证明\"低成本+高忠诚\"。\n- 让步：赶工期时确实该偏资深，显务实。\n- 收尾： seniors 稳、juniors 长，呼应同学。\n\n### 亮点表达 / 句型\n- `a *mixed* roster`（混合阵容，HR 类精准词）\n- `hit the ground running`（上任即上手，地道习语）\n- `resist fresh methods`（抵触新方法，点出全资深隐患）\n\n### 写作思路（可借鉴点）\n1. 招聘类题高分答法是\"组合拳\"：不是二选一，而是\"按阶段/风险分配\"。\n2. 用 `A good case in point from my lab` 把例子锚定到自己背景，真实感强、不套路。\n3. 让步句 `Admittedly … Still …` 同时承认对方合理 + 补出盲区，最显成熟度。"
+  },
+  {
+   "id": "writing_academic-discussion_06-car-free-downtown",
+   "type": "academic",
+   "title": "市中心该禁车吗？",
+   "difficulty": 3,
+   "wordcount": "155",
+   "professor": "Some cities ban private cars from their downtown cores to cut pollution and reclaim public space. Is a full car ban a good policy, in your view? Why or why not?",
+   "student": "Yes—centers are calmer and cleaner when cars are gone. I love car-free zones when I visit.",
+   "model": "I'd agree with Kelly that car-free centers feel great, but I'd argue for *limited* restriction rather than a full ban.\n\nThe reason is trade-offs. A good case in point: when my city pedestrianized the main square, foot traffic and small businesses rose—exactly Kelly's point. Yet delivery vans, taxis, and drivers with disabilities still need access; a blanket ban hurts them and can push commerce to out-of-town malls.\n\nAdmittedly, the air-quality and safety gains Kelly enjoys are real and valuable. The smarter fix is time-and-zone limits: ban private cars at peak hours, allow clean transit and essential vehicles, and invest in reliable buses so people aren't stranded.\n\nUnlike Kelly, who supports an outright ban, I'd stress pairing restrictions with alternatives so the policy lasts.",
+   "analysis": "### 结构拆解\n- 第 1 句：接 Kelly + 立\"限行而非全禁\"的折中立场。\n- 理由 + 例子：用\"广场步行化\"真实案例证成好处，同时点出配送/无障碍/外溢购物等代价。\n- 让步：承认 Kelly 说的清洁安全是真收益。\n- 收尾：限制须配替代方案才可持续，呼应同学。\n\n### 亮点表达 / 句型\n- `limited restriction rather than a full ban`（限行而非全禁，政策类精准立场）\n- `blanket ban`（一刀切禁令，贬义精准）\n- `pairing restrictions with alternatives`（限制配替代，政策可持续性核心）\n\n### 写作思路（可借鉴点）\n1. 城市规划题极易考\"极端政策\"，高分答法是\"支持目标、反对一刀切\"，显政策素养。\n2. 例子用\"本地亲历的步行化广场\"，具体且有对比（好处 vs 代价）。\n3. `outright ban`（彻底禁令）与 `limited restriction` 对照，是这类题的得分词汇对。"
+  },
+  {
+   "id": "writing_integrated_01-asteroid-vs-volcano",
+   "type": "integrated",
+   "title": "恐龙灭绝：小行星撞击 vs 火山喷发",
+   "difficulty": 3,
+   "wordcount": "290",
+   "reading": "文章认为，约 6600 万年前白垩纪末大灭绝（恐龙消失）由**小行星撞击**引发。证据是墨西哥尤卡坦半岛的希克苏鲁伯陨石坑，其年代与灭绝层吻合；撞击激起的尘埃与硫化物遮蔽阳光，导致全球骤冷、植物光合作用停止，食物链随之崩塌。文章称这一\"瞬间事件\"能解释为何海洋与陆地物种几乎同时消失。",
+   "listening": "讲座反对该结论，主张**大规模火山喷发**（印度德干暗色岩）才是主因。教授指出：德干火山活动持续了数百万年，喷出的二氧化碳与有害气体造成**长期**气候变暖与海洋酸化，足以逐步抹去物种；灭绝在地层中是**渐变**而非突变的。此外，灭绝层中的铱元素也可来自火山而非仅限小行星；而陨石坑的形成时间与物种大量死亡的时间并不严格对齐。",
+   "model": "The reading passage argues that the mass extinction of dinosaurs was caused by a sudden asteroid impact. However, the lecture challenges this view, attributing the extinction to prolonged volcanic activity instead.\n\nFirst, the reading claims that the Chicxulub asteroid impact, by throwing dust and sulfur into the atmosphere, triggered instant global cooling and collapsed the food chain. The professor counters that the Deccan Traps volcanism lasted millions of years and released massive CO₂ and toxic gases, producing long-term warming and ocean acidification—a slow poison far more capable of erasing species than a single flash event.\n\nSecond, while the passage points to the iridium-rich layer as proof of an asteroid, the lecture notes that volcanism can also deposit iridium. In other words, the very \"smoking gun\" the reading relies on is not unique to impacts.\n\nFinally, the reading describes the extinction as sudden and simultaneous across land and sea. The speaker demonstrates that the fossil record shows a gradual decline, and that the crater's timing does not line up tightly with the die-off. This undermines the claim that one impact explains everything.\n\nIn sum, the lecture casts serious doubt on the reading's asteroid-centered explanation.",
+   "analysis": "### 结构拆解\n- **开头段**：一句话点明关系——阅读说小行星，讲座说火山，方向相反。\n- **主体三段**：严格「阅读点 ↔ 讲座反驳」一一对应（冷却机制 / 铱证据 / 突变vs渐变）。\n- **收尾**：一句总结\"讲座质疑阅读\"，不啰嗦。\n\n### 亮点表达 / 句型\n- `challenges this view, attributing … to …`（反驳 + 归因，一句两用）\n- `the very \"smoking gun\" the reading relies on`（smoking gun = 铁证，学术写作加分比喻）\n- `casts serious doubt on`（综合写作收尾万能句）\n\n### 写作思路（可借鉴点）\n1. 综合写作**第一句就必须亮关系**，别写\"阅读讲了A，听力讲了B\"两截。\n2. 三段对应时，用 `First / Second / Finally` 显式分段，阅卷人一眼看到三点齐全。\n3. 听力细节要写具体（\"持续数百万年\"\"CO₂与有害气体\"\"渐变地层\"），这比复述阅读得分高。"
+  },
+  {
+   "id": "writing_integrated_02-ivory-billed-woodpecker",
+   "type": "integrated",
+   "title": "象牙喙啄木鸟是否灭绝",
+   "difficulty": 2,
+   "wordcount": "280",
+   "reading": "文章断言**象牙喙啄木鸟已灭绝**。理由：自 1944 年后再无确证目击；其赖以生存的南方原始老龄林被大规模砍伐；多次官方搜寻（含架设自动相机）一无所获；与其亲缘相近、生态位相似的几种啄木鸟也已消失，说明该谱系整体崩溃。",
+   "listening": "讲座反驳，认为该鸟**很可能仍存活**。教授列举：近年在阿肯色与路易斯安那沼泽，多名有经验的观鸟者独立报告目击，描述与象牙喙特有的\"双敲\"鸣声吻合；录音设备捕获到该独特叫声；目击者均为训练有素的专家，误认概率低。此外，部分河岸林正在恢复，为其提供了潜在栖息地。",
+   "model": "The reading passage concludes that the ivory-billed woodpecker is extinct. The lecture, however, contradicts this conclusion and argues that the bird likely still survives.\n\nFirst, the reading points out that no confirmed sighting has occurred since 1944. The professor pushes back by citing multiple independent reports from experienced observers in Arkansas and Louisiana swamps in recent years, whose descriptions match the species' distinctive features—testimony the passage dismisses too quickly.\n\nSecond, while the passage notes that exhaustive searches with automatic cameras found nothing, the lecture highlights audio recordings of the bird's unique \"double-knock\" call. This acoustic evidence, the speaker argues, is harder to fake than a fleeting visual and strengthens the case for survival.\n\nFinally, the reading claims the loss of old-growth forest sealed the species' fate, and that related woodpeckers have also vanished. The lecture counters that some riparian forests are recovering, offering potential habitat, and that the extinction of relatives does not prove this one is gone.\n\nThus, the lecture undermines the reading's claim of certain extinction.",
+   "analysis": "### 结构拆解\n- 开头：阅读\"已灭绝\" ↔ 讲座\"仍存活\"，直接对立。\n- 三段：目击证词 / 录音证据 / 栖息地恢复，逐点接住阅读的三个论据。\n- 收尾：复用 `undermines` 收口。\n\n### 亮点表达 / 句型\n- `concludes that … / contradicts this conclusion`（结论动词轮换，避免总用 says）\n- `testimony the passage dismisses too quickly`（点出阅读\"草率否定\"，是高分写法）\n- `harder to fake than a fleeting visual`（对比结构，突出证据强度）\n\n### 写作思路（可借鉴点）\n1. 当阅读用\"没找到=不存在\"推理时，讲座常从\"证据方法不可靠/有新证据\"反击——套用 `the passage overlooks …`。\n2. 写\"专家证词\"时用 `experienced observers / trained experts`，呼应听力强调的\"可信度\"。\n3. 别把阅读当事实复读；每段都要落到\"讲座怎么撼动它\"。"
+  },
+  {
+   "id": "writing_integrated_03-roman-concrete",
+   "type": "integrated",
+   "title": "罗马混凝土为何千年不坏",
+   "difficulty": 3,
+   "wordcount": "285",
+   "reading": "文章解释罗马混凝土为何比现代混凝土更耐久：关键在**火山灰（pozzolana）**。火山灰与海水中的矿物质反应，生成一种名为 tobermorite 的结晶，随时间长年加固结构；现代混凝土用普通波特兰水泥，缺乏这种\"越老越强\"的机制，故易开裂。",
+   "listening": "讲座补充并修正：最新研究表明真正的秘诀是混凝土中的**石灰碎屑（lime clasts）**——这些碳酸钙颗粒遇水后能**自我修复**微小裂缝，阻止裂隙扩展。教授指出，仅靠火山灰理论并不完整；此外罗马结构少用钢筋，反而减少了钢筋锈蚀导致的破坏点，这也是其长寿被低估的原因。",
+   "model": "The reading passage explains the durability of Roman concrete by crediting volcanic ash. The lecture, however, amends this explanation, arguing that self-healing lime clasts are the more decisive factor.\n\nFirst, the reading asserts that pozzolana reacts with seawater to form strengthening crystals called tobermorite. The professor acknowledges this but points out that new research identifies lime clasts—calcium-carbonate chunks—as the key: when water enters a crack, these clasts recrystallize and seal it, preventing the fissure from spreading.\n\nSecond, while the passage presents the ash theory as sufficient, the lecture argues it is incomplete on its own. The speaker emphasizes that without accounting for the self-healing mechanism, the ash story cannot fully explain the concrete's millennial lifespan.\n\nFinally, the reading compares Roman concrete favorably to modern Portland cement. The lecture adds a further reason: Romans used little steel reinforcement, so they avoided the corrosion weak points that doom many modern structures. This dimension is missing from the reading.\n\nIn all, the lecture refines—rather than merely opposes—the reading's account.",
+   "analysis": "### 结构拆解\n- 开头用 `amends / refines` 而非单纯 `contradicts`——本篇讲座是\"补充修正\"而非完全对立，措辞要准。\n- 三段：石灰碎屑自修复 / 火山灰理论不完整 / 少钢筋减少破坏点。\n- 收尾 `refines rather than merely opposes` 精准概括\"修正型\"关系。\n\n### 亮点表达 / 句型\n- `amends this explanation`（修正，比 contradict 更贴\"补充型\"关系）\n- `the more decisive factor`（更决定性因素，体现层次）\n- `recrystallize and seal it`（自修复机制的动词链，具体）\n\n### 写作思路（可借鉴点）\n1. 综合写作**关系不只有\"反驳\"**：也有\"补充/修正/限定\"。听清讲座是推翻还是完善阅读，选对动词（refine / complicate / qualify vs. contradict）。\n2. 科技类题目爱考\"旧理论被新研究更新\"，模板句：`new research identifies … as the key`。\n3. 第三段可写阅读\"漏掉的维度\"，用 `missing from the reading` 收。"
+  },
+  {
+   "id": "writing_integrated_04-frilled-lizard",
+   "type": "integrated",
+   "title": "伞蜥的\"领圈\"干嘛用",
+   "difficulty": 2,
+   "wordcount": "275",
+   "reading": "文章认为伞蜥（frilled lizard）颈部那圈皮膜**用于体温调节**。解释：皮膜展开后增大体表表面积，可在清晨吸收更多阳光升温，或在过热时通过对流散热；这是爬行动物常见的\"辐射器\"结构。",
+   "listening": "讲座反对，主张领圈的主功能是**威慑捕食者**。教授说明：受威胁时，蜥蜴猛然竖起领圈、张开大嘴、发出嘶声，瞬间显得大了一圈，吓退猛禽与蛇；体温调节其实靠行为（晒太阳姿势、躲阴凉）完成，与领圈无关。领圈在求偶展示中也被使用，进一步说明它是\"信号器官\"而非散热器。",
+   "model": "The reading passage claims that the frilled lizard's neck membrane functions in thermoregulation. The lecture, however, challenges this, arguing that the frill mainly serves as a defense display.\n\nFirst, the reading suggests the frill's large surface area helps the lizard absorb morning sun or release heat by convection. The professor counters that temperature control is achieved through behavior—basking posture and shade-seeking—not through the membrane, so the thermoregulation role is overstated.\n\nSecond, while the passage treats the frill as a radiator, the lecture shows its real trigger is threat. When alarmed, the lizard erects the frill, opens its mouth, and hisses, suddenly appearing much larger and intimidating predators such as birds of prey and snakes.\n\nFinally, the reading ignores the frill's use in courtship. The speaker points out that males display the frill to rivals and mates, which confirms its primary identity as a signaling organ rather than a cooling device.\n\nThus, the lecture undermines the reading's thermoregulation-centered interpretation.",
+   "analysis": "### 结构拆解\n- 开头：阅读\"体温调节\" ↔ 讲座\"威慑/信号\"，功能之争。\n- 三段：体温靠行为而非领圈 / 受威胁时的威慑机制 / 求偶展示佐证\"信号器官\"。\n- 收尾点明\"以体温为中心的解释被推翻\"。\n\n### 亮点表达 / 句型\n- `functions in thermoregulation`（function in + 名词，学术写法）\n- `overstated`（\"被夸大\"，比 wrong 更准，体现程度）\n- `primary identity as a signaling organ`（primary identity 精准概括\"本质功能\"）\n\n### 写作思路（可借鉴点）\n1. 动物行为类常考\"某结构的功能之争\"：阅读给一个功能，讲座给更可能的另一个 + 行为替代解释。套 `achieved through behavior, not through X`。\n2. 用 `trigger`（触发条件）区分\"何时用\"：领圈在受威胁时而非恒温时展开。\n3. 求偶/展示用途常是讲座的\"第三点\"，用来证明\"信号功能\"——记 `confirms its primary identity as …`。"
+  },
+  {
+   "id": "writing_integrated_05-city-bike-share",
+   "type": "integrated",
+   "title": "城市共享单车计划有效吗",
+   "difficulty": 3,
+   "wordcount": "290",
+   "reading": "文章支持在城市推广**共享单车计划**，列出三项收益：① 提供廉价短途出行，缓解机动车拥堵；② 鼓励日常运动，改善公共健康；③ 以零尾气出行减少碳排放，利好环境。文章称该计划是\"一举多得的城市良政\"。",
+   "listening": "讲座逐条反驳：① 多数骑行是短途休闲而非通勤，汽车流量未减；② 许多用户本就骑车，计划并未带来\"新增\"运动量；③ 调度卡车与车辆制造的排放，抵消了所谓环保收益；此外还带来乱停与安全事故。三项预期目标基本都没达成。",
+   "model": "The reading passage praises city bike-share programs as a triple win for traffic, health, and the environment. The lecture, however, disputes each of these three claimed benefits.\n\nFirst, the reading argues that bike-share eases car congestion by offering cheap short trips. The professor counters that most rides are recreational rather than commuting trips, so the number of cars on the road has barely changed.\n\nSecond, while the passage claims the program improves public health through daily exercise, the lecture points out that many users already cycled before. The program therefore creates little *new* physical activity—it merely shifts existing cyclists onto shared bikes.\n\nFinally, the reading touts zero-emission rides as environmentally friendly. The speaker undermines this by noting that rebalancing trucks and bike manufacturing generate emissions that offset the savings. He adds that careless parking and accidents create further costs the reading ignores.\n\nIn sum, the lecture casts doubt on the reading's optimistic \"triple win\" assessment.",
+   "analysis": "### 结构拆解\n- 开头用 `disputes each of these three claimed benefits` 预告\"逐条反驳\"三段。\n- 三段精准对应阅读三项：拥堵 / 健康 / 环境，每段\"阅读说X → 讲座说X没发生\"。\n- 收尾 `casts doubt on … \"triple win\"` 回扣开头。\n\n### 亮点表达 / 句型\n- `disputes each of these three claimed benefits`（claimed 暗含\"声称但未证实\"，精准）\n- `creates little *new* physical activity`（new 是得分眼：计划没带来增量）\n- `offset the savings`（抵消收益，政策成本收益类高频词）\n\n### 写作思路（可借鉴点）\n1. 政策类综合写作几乎都是\"阅读列好处，讲座拆台\"。每段锁定一个好处，用 `the program therefore … / merely …` 说明\"预期效果未发生\"。\n2. 听到\"多数使用者本就…\"这种**替代解释**（pre-existing behavior），必写——它是推翻\"新增收益\"的关键。\n3. 结尾可加阅读\"忽略的成本\"（ignores further costs），显全面。"
+  }
+ ],
+ "vocab": [
+  {
+   "low": "important",
+   "up": "crucial / pivotal / instrumental"
+  },
+  {
+   "low": "good",
+   "up": "beneficial / advantageous / effective"
+  },
+  {
+   "low": "bad",
+   "up": "detrimental / counterproductive / harmful"
+  },
+  {
+   "low": "think",
+   "up": "argue / maintain / hold that"
+  },
+  {
+   "low": "show",
+   "up": "demonstrate / reveal / indicate"
+  },
+  {
+   "low": "use",
+   "up": "leverage / utilize / employ"
+  },
+  {
+   "low": "help",
+   "up": "facilitate / contribute to / bolster"
+  },
+  {
+   "low": "many",
+   "up": "a host of / numerous / a multitude of"
+  },
+  {
+   "low": "because",
+   "up": "given that / in that / seeing that"
+  },
+  {
+   "low": "so",
+   "up": "consequently / thereby / as a result"
+  }
+ ],
+ "sentence_cards": [
+  {
+   "cat": "一、综合写作专用（描述\"讲座反驳阅读\"）",
+   "pattern": "The lecture **calls into question** the reading's claim that [X]."
+  },
+  {
+   "cat": "一、综合写作专用（描述\"讲座反驳阅读\"）",
+   "pattern": "The professor **refutes** this by arguing that [Y]."
+  },
+  {
+   "cat": "一、综合写作专用（描述\"讲座反驳阅读\"）",
+   "pattern": "This directly **contradicts** the passage's assertion that [X]."
+  },
+  {
+   "cat": "一、综合写作专用（描述\"讲座反驳阅读\"）",
+   "pattern": "The speaker **points out a flaw** in the reading's reasoning."
+  },
+  {
+   "cat": "一、综合写作专用（描述\"讲座反驳阅读\"）",
+   "pattern": "Far from supporting the reading, the lecture **undermines** its central argument."
+  },
+  {
+   "cat": "一、综合写作专用（描述\"讲座反驳阅读\"）",
+   "pattern": "The reading attributes [现象] to [A], whereas the lecture attributes it to [B]."
+  },
+  {
+   "cat": "一、综合写作专用（描述\"讲座反驳阅读\"）",
+   "pattern": "Specifically, the professor notes that [具体证据], which the passage overlooks."
+  },
+  {
+   "cat": "一、综合写作专用（描述\"讲座反驳阅读\"）",
+   "pattern": "--"
+  },
+  {
+   "cat": "二、学术讨论开头（亮立场）",
+   "pattern": "I'd have to side with [Kelly / the professor] on this."
+  },
+  {
+   "cat": "二、学术讨论开头（亮立场）",
+   "pattern": "Count me among those who believe that [立场]."
+  },
+  {
+   "cat": "二、学术讨论开头（亮立场）",
+   "pattern": "I see both sides, but I lean toward the view that [立场]."
+  },
+  {
+   "cat": "二、学术讨论开头（亮立场）",
+   "pattern": "Rather than [常见看法], I'd argue that [你的角度]."
+  },
+  {
+   "cat": "二、学术讨论开头（亮立场）",
+   "pattern": "Building on what [同学] said, I think [延伸/补充]."
+  },
+  {
+   "cat": "二、学术讨论开头（亮立场）",
+   "pattern": "--"
+  },
+  {
+   "cat": "三、展开理由 + 举例（4→5 分关键）",
+   "pattern": "The strongest argument in favor of [X] is that [理由]."
+  },
+  {
+   "cat": "三、展开理由 + 举例（4→5 分关键）",
+   "pattern": "A good case in point is [具体例子 / 个人经历 / 数据]."
+  },
+  {
+   "cat": "三、展开理由 + 举例（4→5 分关键）",
+   "pattern": "Take [某场景] as an example: [描述], which clearly shows that [结论]."
+  },
+  {
+   "cat": "三、展开理由 + 举例（4→5 分关键）",
+   "pattern": "This matters because [为什么重要]."
+  },
+  {
+   "cat": "三、展开理由 + 举例（4→5 分关键）",
+   "pattern": "In my own experience, [个人经历] — that taught me [提炼]."
+  },
+  {
+   "cat": "三、展开理由 + 举例（4→5 分关键）",
+   "pattern": "Empirical evidence backs this up: [数据/研究结论]."
+  },
+  {
+   "cat": "三、展开理由 + 举例（4→5 分关键）",
+   "pattern": "--"
+  },
+  {
+   "cat": "四、让步与平衡（显成熟，加分）",
+   "pattern": "Admittedly, [反方合理处]; nevertheless, [你的立场仍成立]."
+  },
+  {
+   "cat": "四、让步与平衡（显成熟，加分）",
+   "pattern": "To be fair, [对方有点道理], but [转折]."
+  },
+  {
+   "cat": "四、让步与平衡（显成熟，加分）",
+   "pattern": "I'm not suggesting that [极端], only that [温和版立场]."
+  },
+  {
+   "cat": "四、让步与平衡（显成熟，加分）",
+   "pattern": "That said, the trade-off is acceptable because [理由]."
+  },
+  {
+   "cat": "四、让步与平衡（显成熟，加分）",
+   "pattern": "--"
+  },
+  {
+   "cat": "六、学术讨论收尾（呼应同学）",
+   "pattern": "Unlike [同学], who emphasized [A], I'd stress [B]."
+  },
+  {
+   "cat": "六、学术讨论收尾（呼应同学）",
+   "pattern": "Where [同学] focuses on [A], I'd add that [B] also matters."
+  },
+  {
+   "cat": "六、学术讨论收尾（呼应同学）",
+   "pattern": "That's why I'd push back a little on [同学]'s point and argue [你的角度]."
+  }
+ ]
+};
+</script>
+<script>
+(function(){
+"use strict";
+const D = window.TOEFL_DATA;
+const $ = (s,r)=> (r||document).querySelector(s);
+const $$ = (s,r)=> Array.from((r||document).querySelectorAll(s));
+const esc = s => (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const stars = n => "★".repeat(n)+"☆".repeat(5-n);
+
+const RUBRIC = {
+  integrated: [
+    {key:"relation", label:"关系呈现", hint:"开头点明「讲座反驳阅读」，而非分别总结两篇"},
+    {key:"coverage", label:"三点对应", hint:"阅读三点 ↔ 讲座三点 齐全且一一对应"},
+    {key:"detail",   label:"听力细节", hint:"写了讲座具体证据（数字/因果/例子），优于复述阅读"},
+    {key:"language", label:"语言质量", hint:"偶有错但不影响理解"}
+  ],
+  academic: [
+    {key:"position", label:"立场明确", hint:"第一句就亮明立场，不绕"},
+    {key:"answer",   label:"回应教授", hint:"回答了教授的问题，而非另起炉灶"},
+    {key:"example",  label:"具体例子", hint:"≥1 个具体例子（个人/数据/常识）"},
+    {key:"engage",   label:"呼应同学", hint:"接住了同学那句话，体现「讨论」"},
+    {key:"language", label:"语言质量", hint:"无明显语法/拼写崩盘"}
+  ]
+};
+const TIMES = {integrated:20*60, academic:10*60};
+
+// ---------- storage ----------
+const K_PROG="toefl_prog_v1", K_SENT="toefl_sent_v1", K_VOC="toefl_voc_v1";
+function load(k,def){ try{return JSON.parse(localStorage.getItem(k))||def;}catch(e){return def;} }
+function save(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
+let prog = load(K_PROG,{practices:[],streak:0,lastDay:null});
+
+function todayStr(){ const d=new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }
+function bumpStreak(){
+  const t=todayStr();
+  if(prog.lastDay!==t){
+    if(prog.lastDay){
+      const y=new Date(prog.lastDay), diff=Math.round((new Date(t)-y)/86400000);
+      prog.streak = (diff===1)? prog.streak+1 : 1;
+    } else prog.streak=1;
+    prog.lastDay=t; save(K_PROG,prog);
+  }
+}
+function renderStreakTag(){ $("#streakTag").textContent = "🔥 连续 "+prog.streak+" 天"; }
+
+// ---------- leitner ----------
+function leitnerBoxes(k){
+  let st = load(k,{});
+  const now = Date.now();
+  return {
+    st,
+    due(){ return Object.keys(st).filter(id=> (st[id].due||0) <= now ); },
+    review(id, ok){
+      let b = st[id]? st[id].box : 0;
+      b = ok ? Math.min(4, b+1) : 0;
+      const interval = [0,1,3,7,16][b]*86400000;
+      st[id] = {box:b, due: Date.now()+interval, updated:Date.now()};
+      save(k, st);
+    }
+  };
+}
+
+// ---------- views ----------
+const view = $("#view");
+function setTab(name){
+  $$(".tab").forEach(t=> t.classList.toggle("active", t.dataset.tab===name));
+  ({dash:vhDash, practice:vhPractice, self:vhSelf, sentence:vhSentence, vocab:vhVocab, progress:vhProgress, method:vhMethod}[name])();
+}
+
+function vhDash(){
+  const ps = prog.practices;
+  const totalWords = ps.reduce((a,p)=>a+(p.words||0),0);
+  const avg = ps.length? (ps.reduce((a,p)=>a+p.band,0)/ps.length):0;
+  // weak criteria
+  const acc={integrated:{}, academic:{}};
+  ps.forEach(p=>{ if(p.scores){ p.scores.forEach(s=>{ acc[p.type][s.key]=(acc[p.type][s.key]||[]).concat(s.val); }); }});
+  function avgOf(arr){ arr = arr||[]; return arr.length? arr.reduce((a,b)=>a+b,0)/arr.length : null; }
+  const intCrit = RUBRIC.integrated.map(c=>({label:c.label, v:avgOf(acc.integrated[c.key])}));
+  const adCrit  = RUBRIC.academic.map(c=>({label:c.label, v:avgOf(acc.academic[c.key])}));
+  // adaptive recommendation
+  let rec="";
+  const allCrit=[...intCrit,...adCrit].filter(c=>c.v!==null);
+  if(allCrit.length){
+    allCrit.sort((a,b)=>a.v-b.v);
+    const weak=allCrit[0];
+    const typeName = intCrit.includes(weak)?"综合写作":"学术讨论";
+    rec = "你最弱的是「"+weak.label+"」（均分 "+weak.v.toFixed(1)+"/5）。建议下一题主攻 <b>"+typeName+"</b>，并在自评时重点盯这条。";
+  } else {
+    rec = "还没做过自评。先去「限时练习」写一篇，再来自评，系统会给你专属推荐。";
+  }
+  let html = "";
+  html += `<div class="card"><div class="row">
+    <div class="stat"><div class="n">${ps.length}</div><div class="l">已完成练习</div></div>
+    <div class="stat"><div class="n">${totalWords}</div><div class="l">累计写作词数</div></div>
+    <div class="stat"><div class="n">${avg.toFixed(1)}</div><div class="l">平均自评分 /5</div></div>
+    <div class="stat"><div class="n">${prog.streak}</div><div class="l">连续天数</div></div>
+  </div></div>`;
+  html += `<div class="card"><h2>🎯 今日自适应推荐</h2><div class="note">${rec}</div></div>`;
+  if(intCrit.some(c=>c.v!==null)||adCrit.some(c=>c.v!==null)){
+    html += `<div class="card"><h2>📉 弱项分析（各项均分，0–5）</h2>`;
+    html += `<h3>综合写作</h3>`+intCrit.map(c=>barRow(c.label,c.v)).join("");
+    html += `<h3>学术讨论</h3>`+adCrit.map(c=>barRow(c.label,c.v)).join("");
+    html += `</div>`;
+  }
+  html += `<div class="card"><h2>⚡ 快速开始</h2><div class="row">
+    <button class="btn" onclick="setTab('practice')">开始限时练习</button>
+    <button class="btn sec" onclick="setTab('sentence')">句库复习（${leitnerBoxes(K_SENT).due().length} 张待复习）</button>
+    <button class="btn sec" onclick="setTab('vocab')">词汇复习（${leitnerBoxes(K_VOC).due().length} 张待复习）</button>
+  </div></div>`;
+  view.innerHTML = html;
+}
+function barRow(name,v){
+  const pct = v===null?0:(v/5*100);
+  const val = v===null?"—":v.toFixed(1);
+  return `<div class="barrow"><div class="name">${esc(name)}</div><div class="track"><div class="bar"><i style="width:${pct}%"></i></div></div><div class="val">${val}</div></div>`;
+}
+
+// ---- practice ----
+let curPractice=null, timerId=null, timeLeft=0;
+function vhPractice(){
+  const ints = D.prompts.filter(p=>p.type==="integrated");
+  const ads = D.prompts.filter(p=>p.type==="academic");
+  let html = `<div class="card"><h2>① 选任务类型</h2><div class="row">
+    <button class="btn" onclick="startPractice('integrated')">综合写作（读+听+写 · 20min）</button>
+    <button class="btn" onclick="startPractice('academic')">学术讨论（10min）</button>
+    <button class="btn sec" onclick="startPractice('mix')">交错练习（随机混搭两类）</button>
+  </div></div>`;
+  html += `<div class="card"><h2>② 选题目（或随机）</h2>
+    <div class="row" style="margin-bottom:8px">
+      <button class="btn sec" onclick="pickPrompt('integrated','random')">综合 · 随机一题</button>
+      <button class="btn sec" onclick="pickPrompt('academic','random')">学术 · 随机一题</button>
+    </div>
+    <details><summary class="muted" style="cursor:pointer">展开全部题目清单</summary>
+    <div style="margin-top:10px">
+      <h3>综合写作</h3>${ints.map((p,i)=>`<span class="pill" onclick="pickPrompt('integrated',${i})" style="cursor:pointer">${esc(p.title)} ${stars(p.difficulty)}</span>`).join(" ")}
+      <h3>学术讨论</h3>${ads.map((p,i)=>`<span class="pill" onclick="pickPrompt('academic',${i})" style="cursor:pointer">${esc(p.title)} ${stars(p.difficulty)}</span>`).join(" ")}
+    </div></details>
+  </div>`;
+  html += `<div id="practiceArea"></div>`;
+  view.innerHTML = html;
+}
+window.startPractice = function(type){ pickPrompt(type,"random"); };
+window.pickPrompt = function(type,idx){
+  let list, p;
+  if(type==="mix"){
+    const all=D.prompts; p=all[Math.floor(Math.random()*all.length)]; type=p.type;
+  } else {
+    list=D.prompts.filter(x=>x.type===type);
+    p = idx==="random"? list[Math.floor(Math.random()*list.length)] : list[idx];
+  }
+  curPractice={type, p};
+  timeLeft = TIMES[type];
+  renderPracticeArea();
+};
+function renderPracticeArea(){
+  const {type,p}=curPractice;
+  let promptHtml="";
+  if(type==="integrated"){
+    promptHtml = `<h3>📖 Reading（阅读）</h3><div class="modelbox">${esc(p.reading)}</div>
+      <h3>🎧 Listening（听力）</h3><div class="modelbox">${esc(p.listening)}</div>`;
+  } else {
+    promptHtml = `<h3>👩‍🏫 Professor</h3><div class="modelbox">${esc(p.professor)}</div>
+      <h3>🧑‍🎓 同学发言（原题）</h3><div class="modelbox">${esc(p.student)}</div>`;
+  }
+  const html = `<div class="card"><h2>✍️ 写作中：${esc(p.title)} <span class="pill">${type==="integrated"?"综合":"学术"}</span></h2>
+    ${promptHtml}
+    <div class="row" style="margin:14px 0;align-items:center">
+      <div class="timer" id="timer">${fmtTime(timeLeft)}</div>
+      <button class="btn sec" id="tbtn" onclick="toggleTimer()">开始计时</button>
+      <span class="muted" id="wordcnt">0 词</span>
+    </div>
+    <label class="fld">你的作答（直接在这里写，写完点「提交并自评」）</label>
+    <textarea id="draft" placeholder="在此输入英文作答…"></textarea>
+    <div class="row" style="margin-top:12px">
+      <button class="btn" onclick="submitDraft()">提交并自评 →</button>
+      <button class="btn ghost" onclick="vhPractice()">换一题</button>
+    </div>
+  </div>`;
+  $("#practiceArea").innerHTML = html;
+  const ta=$("#draft");
+  ta.addEventListener("input",()=>{ $("#wordcnt").textContent = ta.value.trim()? ta.value.trim().split(/\s+/).length+" 词" : "0 词"; });
+}
+function fmtTime(s){ const m=Math.floor(s/60),ss=s%60; return (m<10?"0":"")+m+":"+(ss<10?"0":"")+ss; }
+window.toggleTimer = function(){
+  const btn=$("#tbtn");
+  if(timerId){ clearInterval(timerId); timerId=null; btn.textContent="继续"; return; }
+  btn.textContent="暂停";
+  timerId=setInterval(()=>{
+    timeLeft--; if(timeLeft<0)timeLeft=0;
+    const t=$("#timer"); if(t){ t.textContent=fmtTime(timeLeft); t.classList.toggle("low",timeLeft<=60); }
+    if(timeLeft===0){ clearInterval(timerId); timerId=null; btn.textContent="时间到"; }
+  },1000);
+};
+window.submitDraft = function(){
+  const text=$("#draft").value;
+  if(!text.trim()){ alert("先写点东西再提交～"); return; }
+  if(timerId){ clearInterval(timerId); timerId=null; }
+  const words = text.trim().split(/\s+/).length;
+  vhSelf({type:curPractice.type, p:curPractice.p, text, words});
+};
+
+// ---- self grade ----
+let curSelf=null;
+function vhSelf(init){
+  curSelf = init || curSelf;
+  if(!curSelf){ view.innerHTML=`<div class="card"><h2>自评</h2><div class="note">请先在「限时练习」写完一篇，再来这里自评。</div></div>`; return; }
+  const {type,p,text,words}=curSelf;
+  const crit = RUBRIC[type];
+  let html = `<div class="card"><h2>📊 自评：${esc(p.title)}</h2>
+    <div class="grid2">
+      <div><h3>你的作答（${words} 词）</h3><div class="modelbox" style="max-height:300px;overflow:auto">${esc(text)}</div></div>
+      <div><h3>对照评分量表，给每一项打分（0–5）</h3>`;
+  crit.forEach(c=>{
+    html += `<div class="crit"><div class="ch"><span class="lbl">${esc(c.label)}</span><span class="h">${esc(c.hint)}</span></div>
+      <div class="scale" data-key="${c.key}">`+
+      [0,1,2,3,4,5].map(v=>`<button data-v="${v}" onclick="setScore('${c.key}',${v})">${v}</button>`).join("")+
+      `</div></div>`;
+  });
+  html += `</div></div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn" onclick="computeBand()">计算分数 & 看范文对比</button>
+    </div>
+    <div id="bandArea"></div>
+  </div>`;
+  view.innerHTML = html;
+}
+window.setScore = function(key,v){
+  const scale=$(`.scale[data-key="${key}"]`);
+  $$("button",scale).forEach(b=> b.classList.toggle("on", +b.dataset.v===v));
+  if(!curSelf.scores) curSelf.scores=[];
+  const ex=curSelf.scores.find(s=>s.key===key);
+  if(ex) ex.val=v; else curSelf.scores.push({key,val:v});
+};
+function computeBand(){
+  const crit=RUBRIC[curSelf.type];
+  const got = crit.map(c=>{ const s=(curSelf.scores||[]).find(x=>x.key===c.key); return s?s.val:null; });
+  if(got.some(v=>v===null)){ alert("还有项目没打分～"); return; }
+  const band = Math.round(got.reduce((a,b)=>a+b,0)/got.length*10)/10;
+  // save
+  prog.practices.push({type:curSelf.type, id:curSelf.p.id, title:curSelf.p.title, words:curSelf.words, band, scores:curSelf.scores.map(s=>({key:s.key,val:s.val})), day:todayStr()});
+  save(K_PROG,prog); bumpStreak(); renderStreakTag();
+  // weak criteria
+  const weakIdx = got.map((v,i)=>({i,v})).sort((a,b)=>a.v-b.v).slice(0,2).map(o=>o.i);
+  const bandCls = band>=4?"good":band>=3?"mid":"low";
+  let html = `<div class="card"><div class="row" style="align-items:center;gap:18px">
+      <div><div class="band ${bandCls}">${band}</div><div class="muted">/5 自评总分</div></div>
+      <div style="flex:1">
+        <div class="note">已记录到进度（累计 ${prog.practices.length} 篇）。最弱项：${weakIdx.map(i=>esc(crit[i].label)).join("、")}。下一题可针对性练习。</div>
+        ${crit.map((c,i)=>`<div class="barrow"><div class="name">${esc(c.label)}</div><div class="track"><div class="bar"><i style="width:${got[i]/5*100}%"></i></div></div><div class="val">${got[i]}</div></div>`).join("")}
+      </div>
+    </div></div>`;
+  // model compare
+  html += `<div class="card"><h2>📐 范文对比</h2>
+    <div class="grid2">
+      <div><h3>你的作答</h3><div class="modelbox" style="max-height:340px;overflow:auto">${esc(curSelf.text)}</div></div>
+      <div><h3>✅ 官方范文</h3><div class="modelbox" style="max-height:340px;overflow:auto">${esc(curSelf.p.model)}</div></div>
+    </div>
+    <button class="btn sec" style="margin-top:12px" onclick="toggleAnalysis()">显示/隐藏 中文结构解析</button>
+    <div class="reveal" id="analysisBox" style="margin-top:10px"><div class="modelbox">${esc(curSelf.p.analysis)}</div></div>
+  </div>`;
+  // next step
+  html += `<div class="card"><h2>➡️ 下一步</h2><div class="row">
+    <button class="btn" onclick="pickPrompt('${curSelf.type}','random')">再来一篇（同类）</button>
+    <button class="btn sec" onclick="setTab('dash')">看仪表盘更新</button>
+  </div></div>`;
+  $("#bandArea").innerHTML = html;
+}
+window.toggleAnalysis = function(){ $("#analysisBox").classList.toggle("show"); };
+
+// ---- flashcard (sentence & vocab) ----
+function flashcardView(kind){
+  const K = kind==="sentence"? K_SENT : K_VOC;
+  const items = kind==="sentence"? D.sentence_cards : D.vocab;
+  const L = leitnerBoxes(K);
+  const dueIds = L.due();
+  // ensure all ids exist in st
+  items.forEach((it,i)=>{ const id=String(i); if(!L.st[id]) L.st[id]={box:0,due:0,updated:0}; });
+  save(K,L.st);
+  const queue = dueIds.length? dueIds : (function(){ // if none due, offer all (new)
+      return items.map((_,i)=>String(i));
+  })();
+  let idx=0;
+  function frontOf(it){ return kind==="sentence"? it.cat.replace(/[（(].*$/,"") : it.low; }
+  function backOf(it){ return kind==="sentence"? it.pattern : it.up; }
+  function render(){
+    if(idx>=queue.length){
+      view.innerHTML = `<div class="card"><h2>${kind==="sentence"?"🔤 句库":"📚 词汇"}训练</h2>
+        <div class="note">🎉 今日待复习已全部完成！明天会按间隔重复算法自动安排复习。累计 ${items.length} 张卡。</div>
+        <button class="btn sec" onclick="setTab('${kind==="sentence"?"sentence":"vocab"}')">再来一轮</button></div>`;
+      return;
+    }
+    const id=queue[idx]; const it=items[+id];
+    const box=L.st[id]?L.st[id].box:0;
+    const html=`<div class="card"><h2>${kind==="sentence"?"🔤 句库训练（间隔重复）":"📚 词汇训练（间隔重复）"}</h2>
+      <div class="note">主动回忆：先看正面，在心里/纸上说出答案，再翻面核对。第 ${idx+1}/${queue.length} 张 · 当前盒子 ${box}/4</div>
+      <div class="fc" onclick="flipCard()">
+        <div class="cat">${kind==="sentence"?"功能场景":"低级词 → 升级"}</div>
+        <div class="big" id="fcFront">${esc(frontOf(it))}</div>
+        <div class="sub" id="fcBack" style="display:none">${esc(backOf(it))}</div>
+        <div class="hint">点击卡片翻面</div>
+      </div>
+      <div class="row" style="justify-content:center">
+        <button class="btn warn" onclick="gradeCard('${id}',false)">😵 忘了</button>
+        <button class="btn" onclick="gradeCard('${id}',true)">😎 记得</button>
+      </div>
+    </div>`;
+    view.innerHTML=html;
+  }
+  window.flipCard=function(){ const b=$("#fcBack"); b.style.display = b.style.display==="none"?"block":"none"; };
+  window.gradeCard=function(id,ok){ L.review(id,ok); idx++; render(); };
+  render();
+}
+function vhSentence(){ flashcardView("sentence"); }
+function vhVocab(){
+  const banner = `<div class="banner">📚 <b>全新升级：AWL 570 学术词汇训练营</b> → <a href="vocab.html">点此打开 vocab.html</a>。主动回忆 + Leitner 间隔重复 + 上下文例句 + 词族联动 + TTS 发音 + 自测 + 错词本，专攻托福阅读/写作学术核心词。</div>`;
+  flashcardView("vocab");
+  view.innerHTML = banner + view.innerHTML;
+}
+
+// ---- progress ----
+function vhProgress(){
+  const ps=prog.practices;
+  let html=`<div class="card"><h2>📈 进度与数据挖掘</h2>`;
+  if(!ps.length){ html+=`<div class="note">还没有练习记录。去「限时练习」写第一篇吧。</div>`; }
+  else {
+    const byType={integrated:ps.filter(p=>p.type==="integrated"), academic:ps.filter(p=>p.type==="academic")};
+    html+=`<div class="row">
+      <div class="stat"><div class="n">${ps.length}</div><div class="l">总练习</div></div>
+      <div class="stat"><div class="n">${byType.integrated.length}</div><div class="l">综合</div></div>
+      <div class="stat"><div class="n">${byType.academic.length}</div><div class="l">学术</div></div>
+      <div class="stat"><div class="n">${(ps.reduce((a,p)=>a+p.words,0))}</div><div class="l">总词数</div></div>
+    </div>`;
+    html+=`<div style="margin-top:14px"><h3>练习历史</h3>`;
+    ps.slice().reverse().forEach(p=>{
+      html+=`<div class="barrow"><div class="name" style="width:auto;flex:1">${esc(p.title)} <span class="pill">${p.type==="integrated"?"综合":"学术"}</span></div><div class="val" style="width:auto">${p.band}/5 · ${p.words}词</div></div>`;
+    });
+    html+=`</div>`;
+  }
+  html+=`<div class="row" style="margin-top:16px">
+      <button class="btn sec" onclick="exportProg()">导出进度 JSON</button>
+      <button class="btn ghost" onclick="resetProg()">清空全部进度</button>
+    </div></div>`;
+  view.innerHTML=html;
+}
+window.exportProg=function(){
+  const blob=new Blob([JSON.stringify({prog, sent:load(K_SENT,{}), voc:load(K_VOC,{})},null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="toefl-progress.json"; a.click();
+};
+window.resetProg=function(){
+  if(confirm("确定清空所有练习进度和卡片复习记录？此操作不可恢复。")){
+    localStorage.removeItem(K_PROG); localStorage.removeItem(K_SENT); localStorage.removeItem(K_VOC);
+    prog={practices:[],streak:0,lastDay:null}; renderStreakTag(); vhProgress();
+  }
+};
+
+// ---- method ----
+function vhMethod(){
+  const items=[
+    ["① 主动回忆 / 测试效应","逼你「产出」而不是「读」。练习时真写、写完自评，比反复看范文记得牢得多（Purdue 研究：测自己比重读多 retention ~50%）。"],
+    ["② 间隔重复","按递增间隔复习。句库/词汇用 Leitner 盒子自动排「今日待复习」，在快忘记的前一刻复习，长期记忆最省时。"],
+    ["③ 即时 + 纠正性反馈","不只给分，要解释「为什么」。自评对照评分量表，每项给自检问题；写完和范文并排比，定位差距。"],
+    ["④ 游戏化要对","进度可视化绑定学习目标（弱项雷达、连续天数），不是虚荣分。徽章/微奖励绑定具体行为才有效。"],
+    ["⑤ 自适应推荐","按你的自评数据，推最弱的任务类型与评分项，把力气花在刀刃上。"],
+    ["⑥ 无登录 · 本地保存","进度与卡片仅存本机浏览器（localStorage），关掉页面也不丢，且不联网、不上传——和主流 TOEFL 练习产品一致。"]
+  ];
+  view.innerHTML = `<div class="card"><h2>🧠 这站为什么这么设计（学习科学背书）</h2>
+    <div class="methodgrid">${items.map(i=>`<div class="mc"><div class="t">${i[0]}</div><div class="principle">${i[1]}</div></div>`).join("")}</div>
+    <div class="note" style="margin-top:14px">你现有的 11 篇范文 + 句库就是「材料」，上面的机制是「怎么练才记得住」。两者结合，才是完整的学习闭环。</div>
+  </div>`;
+}
+
+// ---------- init ----------
+$$(".tab").forEach(t=> t.addEventListener("click",()=>setTab(t.dataset.tab)));
+renderStreakTag();
+setTab("dash");
+})();
+</script>
+</body>
+</html>
