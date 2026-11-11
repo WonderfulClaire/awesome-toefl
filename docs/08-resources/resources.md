@@ -77,6 +77,7 @@
 | [ELSA Speak](https://elsaspeak.com/) 💰 | 发音纠正 App，音标弱的考生适用 |
 | [Grammarly](https://www.grammarly.com/) | 写作语法自查（免费版够用） |
 | 系统自带 TTS / 在线 TTS | 把 AI 生成的句子转语音，自制「听后复述」题 |
+| [Ashore 托福 2026 面试题](https://tryashore.com/toefl/speaking/interview-questions) | 新版口语面试（Take an Interview）题目整理，免费、无需注册；同站另有免费的 [分数换算](https://tryashore.com/toefl/score-converter)。站内 AI 口语模考部分 💰，分数为 AI 估分，非官方成绩 |
 
 ## 模考与练习平台
 
