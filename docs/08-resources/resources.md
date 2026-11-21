@@ -73,6 +73,7 @@
 | 资源 | 说明 |
 | --- | --- |
 | [TED-Ed](https://www.youtube.com/@TEDEd) / [SciShow](https://www.youtube.com/@SciShow) / [Kurzgesagt](https://www.youtube.com/@kurzgesagt) | 学术科普向，难度与新版学术短讲接近 |
+| [GetYouTubeTranscript](https://getyoutubetranscript.com/) | 把上面这些 YouTube 视频的英文字幕转成带时间戳的文稿：精听、听写后逐句对照原文，也可下载 TXT / SRT 做笔记。基础功能免费，部分功能 💰 |
 | [VOA Learning English](https://learningenglish.voanews.com/) | 慢速新闻，基础期入门 |
 | [BBC 6 Minute English](https://www.bbc.co.uk/learningenglish/english/features/6-minute-english) | 6 分钟话题播客，泛听精听两相宜 |
 | 美剧情景喜剧（Friends / Modern Family 等） | 「听后选答」的最佳日常反应训练素材 |
