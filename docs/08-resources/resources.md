@@ -101,6 +101,7 @@
 | [ETS TOEFL TestReady](https://www.ets.org/content/ets-org/language-master/in/home/preparation-toefl/testready.html) | ETS 官方备考平台，提供免费全长练习与四科反馈。开始前确认所选练习对应新版题型。 |
 | 国内在线刷题平台（考满分/小站/KMF 等） | 免费题库多，**注意确认已更新新版题型** |
 | [TST Prep 官网](https://tstprep.com/) | 免费模拟题与资料包，配合其 [YouTube 频道](https://www.youtube.com/@TSTPrep) 食用 |
+| [ToeflHub](https://toeflhub.com/tools/mock-exam) | 针对 2026 新版托福（TOEFL iBT）的全真模考平台：68 套完整模考、5,000+ 题，覆盖 11 种新题型与阅读 / 听力自适应；写作与口语由 AI 评分，给出逐句反馈与改写参考（评分为平台估分，非官方评分）。新用户注册免费领 1 套，关注公众号再领 2 套，共 3 套；其余套数 💰。注：本条由 ToeflHub 团队自荐。 |
 
 ### 模考复盘模板
 
