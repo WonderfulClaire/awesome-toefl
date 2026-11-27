@@ -94,6 +94,12 @@
 | [Grammarly](https://www.grammarly.com/) | 写作语法自查（免费版够用） |
 | 系统自带 TTS / 在线 TTS | 把 AI 生成的句子转语音，自制「听后复述」题 |
 
+## 学习计划 / Study plans
+
+| 资源 | 说明 |
+| --- | --- |
+| [OpenExam Hub](https://openexamhub.org/exams/toefl) | Free, MIT-licensed study planner that turns official public TOEFL materials into a day-by-day plan. A free account is required to generate a plan; a sample can be previewed first. There is no paid tier. Not affiliated with ETS. |
+
 ## 模考与练习平台
 
 | 资源 | 说明 |
